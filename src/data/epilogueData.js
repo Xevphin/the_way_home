@@ -46,7 +46,7 @@ export const EPILOGUE_DOOR_TARGET = {
 export const HAFIZ_DOOR_SCRIPT = [
   {
     speaker: 'HAFIZ',
-    text: 'Bro... you look completely pale. Did you get any sleep last night? What happened?',
+    text: 'Hey man, I saw your car out front—you look completely pale. Are you okay? Mind if I come in for a minute?',
   },
   {
     speaker: 'YOU',
@@ -54,7 +54,11 @@ export const HAFIZ_DOOR_SCRIPT = [
   },
   {
     speaker: 'HAFIZ',
-    text: 'Wait—Lembah Batu?! Nobody drives down that sealed road after midnight anymore... Come inside, sit down and tell me everything.',
+    text: 'Wait—Lembah Batu?! Nobody drives down that sealed road after midnight anymore...',
+  },
+  {
+    speaker: 'YOU',
+    text: "Yeah, come on in. Let's sit in the living room—I'll tell you everything.",
   },
 ];
 

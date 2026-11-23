@@ -62,9 +62,9 @@ export default function ShadowStalker({
 
   useFrame(({ clock }, delta) => {
     if (!active || !entityRef.current) {
-      if (entityRef.current) entityRef.current.visible = false;
+      if (entityRef.current) entityRef.current.position.set(-11.5, -50, -28.0);
       sendThreat(0);
-      prevActiveRef.current = false; // Hidden & inactive until awakened (memo / phantom stall)
+      prevActiveRef.current = false; // Parked underground & pre-warmed until awakened (0ms compile!)
       return;
     }
     const dt = Math.min(delta, 0.1);
@@ -91,10 +91,10 @@ export default function ShadowStalker({
     prevSafeRef.current = inSafeZone;
     graceRef.current = Math.max(0, graceRef.current - dt);
 
-    // Banished: hidden in the fog, then re-emerges further down the treeline
+    // Banished: parked underground in the fog, then re-emerges further down the treeline
     if (vanishTimerRef.current > 0) {
       vanishTimerRef.current -= dt;
-      entityRef.current.visible = false;
+      entityRef.current.position.set(entityPos.x, -50, entityPos.z);
       sendThreat(0);
       if (vanishTimerRef.current <= 0) {
         const side = Math.random() > 0.5 ? -1 : 1;
@@ -103,7 +103,6 @@ export default function ShadowStalker({
       }
       return;
     }
-    entityRef.current.visible = true;
 
     const nearStartingCar = playerPos.z > -6.5;
 
@@ -218,7 +217,7 @@ export default function ShadowStalker({
         const side = Math.random() > 0.5 ? -1 : 1;
         entityPos.set(side * 16.0, 0, playerPos.z - 28.0);
         vanishTimerRef.current = 7.5;
-        entityRef.current.visible = false;
+        entityRef.current.position.set(entityPos.x, -50, entityPos.z);
         sendThreat(0);
         playSpiritRecoilWhisper();
         onCatchPlayer?.(catchPos);
@@ -230,12 +229,12 @@ export default function ShadowStalker({
     entityRef.current.lookAt(playerPos.x, 1.7, playerPos.z);
   });
 
+  // Always mounted & visible (parked at y = -50 until awakened) so shader is pre-compiled on mount!
   return (
     <ShadowStalkerModel
       ref={entityRef}
-      visible={false}
       shroudMatRef={shroudMatRef}
-      position={[-11.5, 0.15, -28.0]}
+      position={[-11.5, -50, -28.0]}
     />
   );
 }

@@ -21,8 +21,9 @@ import useSubtitles from '../hooks/useSubtitles';
 import useMidnightInteractions from '../hooks/useMidnightInteractions';
 import { playFlashlightClick, playSanctuaryChime } from '../components/AudioEngine';
 import {
-  playCrashShockRinging, playWhisperScare, startForestNightAmbience, stopForestNightAmbience,
+  playCrashShockRinging, playWhisperScare, prewarmCrashShockRinging, startForestNightAmbience, stopForestNightAmbience,
 } from '../components/ForestAmbienceAudio';
+import { prewarmCrashAudio } from '../components/RadioAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
@@ -60,6 +61,8 @@ export default function GamePage({
 
   useEffect(() => {
     preloadAllForestModels();
+    prewarmCrashAudio();
+    prewarmCrashShockRinging();
     if (initialSpawn.skipCutscene) return undefined;
     const t = setTimeout(() => setEntryFadeOpacity(0), 60);
     return () => clearTimeout(t);
@@ -235,7 +238,7 @@ export default function GamePage({
         />
       </Canvas>
 
-      {impactShock && <div className="impact-shock-cut" aria-hidden="true" />}
+      <div className="impact-shock-cut" style={{ opacity: impactShock ? 1 : 0 }} aria-hidden="true" />
 
       {/* Crisp 0.5s Fade-From-Black Curtain Entering the Forest FM Radio Cutscene */}
       <div

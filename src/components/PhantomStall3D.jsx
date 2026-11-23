@@ -163,41 +163,41 @@ export default function PhantomStall3D({ dinersStare = false, revealed = false }
           <meshStandardMaterial color={revealed ? '#1c1715' : '#6e4c32'} roughness={0.82} />
         </mesh>
 
-        {/* PHASE A: Warm Glowing Illusion Bulbs, Tables & Steaming Dishes */}
-        {!revealed && (
-          <group>
-            {[-2.4, -0.8, 0.8, 2.4].map((bz, i) => (
-              <mesh key={i} position={[1.45, 2.52, bz]}>
-                <sphereGeometry args={[0.11, 10, 10]} />
-                <meshBasicMaterial color={dinersStare ? '#ffd29e' : '#ffe59c'} />
-              </mesh>
-            ))}
-            <pointLight
-              position={[1.8, 2.55, 0]}
-              color={dinersStare ? '#ff9d52' : '#ffc266'}
-              intensity={dinersStare ? 5.5 : 14.0}
-              distance={26}
-            />
-            <pointLight position={[3.6, 1.8, 0]} color="#ffbe5c" intensity={5.2} distance={18} />
-            {/* Dining Tables & Plates */}
-            <ModelAsset url={MODELS.roundTable} position={[2.25, 0.1, -0.6]} targetHeight={0.78} />
-            <ModelAsset url={MODELS.roundTable} position={[2.35, 0.1, 1.65]} targetHeight={0.78} />
-            {[[-0.6, 2.25], [1.65, 2.35]].map(([tz, tx], idx) => (
-              <mesh key={idx} position={[tx, 0.9, tz]}>
-                <cylinderGeometry args={[0.2, 0.16, 0.04, 12]} />
-                <meshStandardMaterial color="#ede8dd" roughness={0.4} />
-              </mesh>
-            ))}
-          </group>
-        )}
+        {/* PHASE A: Warm Glowing Illusion Bulbs, Tables & Steaming Dishes (lights kept mounted, intensity=0 when revealed) */}
+        <group visible={!revealed}>
+          {[-2.4, -0.8, 0.8, 2.4].map((bz, i) => (
+            <mesh key={i} position={[1.45, 2.52, bz]}>
+              <sphereGeometry args={[0.11, 10, 10]} />
+              <meshBasicMaterial color={dinersStare ? '#ffd29e' : '#ffe59c'} />
+            </mesh>
+          ))}
+          <ModelAsset url={MODELS.roundTable} position={[2.25, 0.1, -0.6]} targetHeight={0.78} />
+          <ModelAsset url={MODELS.roundTable} position={[2.35, 0.1, 1.65]} targetHeight={0.78} />
+          {[[-0.6, 2.25], [1.65, 2.35]].map(([tz, tx], idx) => (
+            <mesh key={idx} position={[tx, 0.9, tz]}>
+              <cylinderGeometry args={[0.2, 0.16, 0.04, 12]} />
+              <meshStandardMaterial color="#ede8dd" roughness={0.4} />
+            </mesh>
+          ))}
+        </group>
+        <pointLight
+          position={[1.8, 2.55, 0]}
+          color={dinersStare ? '#ff9d52' : '#ffc266'}
+          intensity={revealed ? 0 : dinersStare ? 5.5 : 14.0}
+          distance={26}
+        />
+        <pointLight
+          position={[3.6, 1.8, 0]}
+          color="#ffbe5c"
+          intensity={revealed ? 0 : 5.2}
+          distance={18}
+        />
 
-        {/* PHASE B: Pitch-Dark Rotted Reality Covered in Pulsing Organic Veins */}
-        {revealed && (
-          <group>
-            <PulsingOrganicVeins />
-            <pointLight position={[0.4, 1.35, 0]} color="#7a111c" intensity={1.8} distance={8.5} />
-          </group>
-        )}
+        {/* PHASE B: Pitch-Dark Rotted Reality Covered in Pulsing Organic Veins (pre-mounted, zero shader compile!) */}
+        <group visible={revealed}>
+          <PulsingOrganicVeins />
+        </group>
+        <pointLight position={[0.4, 1.35, 0]} color="#7a111c" intensity={revealed ? 1.8 : 0} distance={8.5} />
       </group>
 
       {/* PHASE A: 4 Uncanny Diners Quietly Eating / Turning in Unison to Stare */}

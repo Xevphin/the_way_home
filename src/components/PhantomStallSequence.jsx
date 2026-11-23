@@ -134,6 +134,8 @@ export default function PhantomStallSequence({
 
     if (t >= SEQUENCE_DURATION && !f.done) {
       f.done = true;
+      onFlashStrobe(false);
+      onDinersStare(false);
       setAmbienceSilence(false);
       playerPosRef.current.copy(stumblePos);
       playerYawRef.current = Math.PI / 2; // Facing west toward the revealed stall
