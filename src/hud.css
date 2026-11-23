@@ -1,0 +1,294 @@
+/* ============================================================================
+   src/hud.css
+   Immersive, borderless psychological horror HUD (Outlast / Fears to Fathom):
+   - Sleek top-left objective typography
+   - Borderless bottom-right battery bar & collected item chips
+   - Sequential fading control hints (TutorialPrompts)
+   - Borderless glowing Safe Zone indicator & film-style subtitles
+   - [M] Folding Road Map modal & Demo Ending overlay
+   ============================================================================ */
+
+/* 1. TOP-LEFT: CLEAN BORDERLESS CONCEPT-MATCHED OBJECTIVE UI */
+.minimal-task-hud {
+  position: absolute; top: 24px; left: 28px; z-index: 20;
+  max-width: 480px; pointer-events: none;
+  border: none; padding: 0; background: none;
+}
+
+.minimal-task-chapter {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.25rem; font-weight: 800; letter-spacing: 0.02em;
+  color: #e8bd30;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 1px 3px rgba(0, 0, 0, 0.95);
+  margin-bottom: 0.25rem;
+}
+
+.minimal-task-text {
+  font-size: 1.05rem; font-weight: 600; letter-spacing: 0.01em;
+  line-height: 1.4; color: #ffffff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.98), 0 1px 4px rgba(0, 0, 0, 0.95);
+}
+
+.top-menu-escape-btn {
+  position: absolute; top: 20px; right: 24px; z-index: 25;
+  padding: 0.36rem 0.75rem; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.08em; color: rgba(241, 245, 249, 0.92);
+  background: rgba(8, 12, 18, 0.55); backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 4px; cursor: pointer; transition: all 0.2s ease;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+}
+.top-menu-escape-btn:hover { background: rgba(14, 20, 30, 0.78); color: #fff; border-color: rgba(255, 255, 255, 0.42); }
+
+/* TOP-RIGHT COMPASS (SUBTLE, UNLOCKED BY MAP) */
+.corner-compass-card {
+  position: absolute; top: 58px; right: 24px; z-index: 20;
+  pointer-events: none; padding: 0.35rem 0.2rem;
+}
+.compass-dial-row { display: flex; align-items: center; gap: 0.6rem; }
+.compass-dial-circle {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid rgba(148, 210, 255, 0.45);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(4, 8, 14, 0.35);
+}
+.compass-needle { font-size: 0.85rem; color: #f6c467; transition: transform 0.08s linear; }
+.compass-heading {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: rgba(165, 222, 255, 0.9); text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
+}
+.compass-target-name {
+  font-size: 0.73rem; color: rgba(226, 232, 240, 0.82);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
+}
+
+/* 2. BOTTOM-RIGHT: BORDERLESS BATTERY BAR & COLLECTED CHIPS */
+.minimal-status-hud {
+  position: absolute; bottom: 24px; right: 28px; z-index: 20;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0.55rem;
+}
+
+.collected-badges-row { display: flex; align-items: center; gap: 0.55rem; }
+
+.minimal-item-chip {
+  display: inline-flex; align-items: center; gap: 0.38rem;
+  padding: 0.26rem 0.6rem; border-radius: 4px; border: none;
+  background: rgba(10, 15, 24, 0.42); backdrop-filter: blur(4px);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  letter-spacing: 0.06em; color: rgba(226, 232, 240, 0.88);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+.minimal-item-chip.clickable { cursor: pointer; transition: background 0.18s ease; }
+.minimal-item-chip.clickable:hover { background: rgba(255, 196, 100, 0.2); color: #fff; }
+.minimal-item-chip.key { color: #fde68a; }
+.chip-key {
+  padding: 0.06rem 0.3rem; border-radius: 3px; font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.3); font-size: 0.65rem;
+}
+
+.minimal-battery-row {
+  display: flex; align-items: center; gap: 0.55rem;
+  transition: opacity 0.25s ease;
+}
+.minimal-battery-row.off { opacity: 0.52; }
+.minimal-beam-icon {
+  font-size: 0.88rem; color: #fef0c7;
+  text-shadow: 0 0 10px rgba(255, 218, 130, 0.55);
+}
+.minimal-battery-track {
+  width: 112px; height: 4px; border-radius: 99px;
+  background: rgba(255, 255, 255, 0.16); overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+}
+.minimal-battery-fill {
+  height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #f5c36c, #fff6db);
+  box-shadow: 0 0 10px rgba(255, 224, 145, 0.65);
+  transition: width 0.25s linear;
+}
+.minimal-battery-fill.low {
+  background: linear-gradient(90deg, #dc2626, #f87171);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.75);
+}
+.minimal-battery-pct {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  color: rgba(248, 240, 215, 0.85); min-width: 30px; text-align: right;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
+}
+.minimal-battery-pct.low { color: #f87171; }
+
+/* 3. LARGE CENTERED SLOW-FADING CONTROL & INTERACTION PROMPTS */
+.center-control-prompt {
+  position: absolute; bottom: 28%; left: 50%; transform: translateX(-50%);
+  z-index: 23; text-align: center; pointer-events: none;
+  animation: centerPromptFadeIn 0.85s ease forwards;
+  transition: opacity 1.1s ease, transform 1.1s ease;
+}
+.center-control-prompt.fading-out {
+  opacity: 0; transform: translate(-50%, 6px);
+}
+
+.center-prompt-headline {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 2.05rem; font-weight: 800; letter-spacing: 0.03em;
+  color: #ffffff; line-height: 1.15;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.98), 0 1px 4px rgba(0, 0, 0, 0.98);
+}
+
+.center-prompt-subtext {
+  margin-top: 0.25rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.22rem; font-weight: 700; letter-spacing: 0.02em;
+  color: rgba(248, 250, 252, 0.95);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.98), 0 1px 4px rgba(0, 0, 0, 0.98);
+}
+
+@keyframes centerPromptFadeIn {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes promptFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 4. BORDERLESS GLOWING SAFE ZONE INDICATOR */
+.safe-zone-glow {
+  position: absolute; top: 82px; left: 50%; transform: translateX(-50%); z-index: 22;
+  text-align: center; pointer-events: none; max-width: 90vw;
+  animation: promptFadeIn 0.85s ease forwards;
+  transition: opacity 1.1s ease;
+}
+.safe-zone-glow.softened { opacity: 0.52; }
+
+.safe-zone-title-row {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Cinzel', serif; font-size: 0.94rem; font-weight: 700;
+  letter-spacing: 0.2em; color: #fce3a4;
+  text-shadow: 0 0 18px rgba(255, 196, 86, 0.62), 0 2px 10px rgba(0, 0, 0, 0.95);
+}
+.safe-zone-lantern { font-size: 1rem; color: #ffd479; }
+.safe-zone-sep { opacity: 0.5; }
+.safe-zone-place { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 0.82rem; letter-spacing: 0.08em; color: #e2e8f0; }
+.safe-zone-whisper {
+  margin-top: 0.22rem; font-size: 0.78rem; font-style: italic;
+  color: rgba(254, 243, 199, 0.84);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.98);
+}
+
+/* 5. BORDERLESS CINEMATIC FILM SUBTITLES & INTERACTION PROMPT */
+.center-reticle-dot {
+  position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  background: rgba(255, 255, 255, 0.68); box-shadow: 0 0 6px rgba(0, 0, 0, 0.95);
+  pointer-events: none; z-index: 15;
+}
+
+.interaction-prompt-minimal {
+  position: absolute; top: 55%; left: 50%; transform: translateX(-50%); z-index: 22;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; letter-spacing: 0.05em;
+  color: #fff6db; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.98), 0 0 10px rgba(255, 196, 86, 0.35);
+  pointer-events: none; white-space: nowrap;
+}
+
+.film-subtitle-wrap {
+  position: absolute; bottom: 86px; left: 50%; transform: translateX(-50%); z-index: 24;
+  max-width: min(86vw, 680px); text-align: center; pointer-events: none;
+  animation: subtitleFadeIn 0.55s ease forwards;
+}
+.film-subtitle-wrap.in-cutscene { bottom: 72px; }
+
+@keyframes subtitleFadeIn {
+  from { opacity: 0; transform: translate(-50%, 6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.film-subtitle-tag {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.22em; color: #f8d47c;
+  text-shadow: 0 2px 10px #000, 0 0 6px #000, 0 1px 3px #000;
+  margin-bottom: 0.28rem;
+}
+
+.film-subtitle-text {
+  font-size: 1.06rem; font-weight: 500; line-height: 1.55; color: #f8fafc;
+  text-shadow: 0 2px 14px #000, 0 0 8px rgba(0, 0, 0, 0.98), 0 1px 3px #000;
+}
+
+.pickup-toast-pill {
+  position: absolute; right: 28px; bottom: 88px; z-index: 26; pointer-events: none;
+  padding: 0.42rem 0.85rem; border-radius: 5px;
+  background: rgba(10, 15, 22, 0.78); border: 1px solid rgba(246, 198, 102, 0.48);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.06em; color: #fde68a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.72);
+  animation: pickupPop 1.25s ease forwards;
+}
+@keyframes pickupPop {
+  0% { opacity: 0; transform: translateY(10px); }
+  18% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+
+.skip-cutscene-minimal {
+  position: absolute; bottom: 24px; right: 28px; z-index: 25;
+  padding: 0.32rem 0.7rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  letter-spacing: 0.1em; color: rgba(203, 213, 225, 0.7); background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 4px; cursor: pointer;
+}
+.skip-cutscene-minimal:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+
+/* 6. [M] FOLDING ROAD MAP MODAL, VIGNETTE & ENDING */
+.roadmap-paper-card {
+  width: 100%; max-width: 520px; padding: 1.4rem 1.6rem;
+  background: #141920; border: 1px solid rgba(226, 184, 97, 0.4);
+  border-radius: 10px; box-shadow: 0 28px 65px rgba(0, 0, 0, 0.9);
+}
+.roadmap-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+.roadmap-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; color: #d4a853; }
+.roadmap-title { font-family: 'Cinzel', serif; font-size: 1.35rem; color: #f6e7c3; }
+.roadmap-canvas {
+  position: relative; width: 100%; height: 360px; border-radius: 6px;
+  background: radial-gradient(circle at center, #252017 0%, #16140f 100%);
+  border: 1px solid rgba(212, 168, 83, 0.35); overflow: hidden; margin-bottom: 0.85rem;
+}
+.roadmap-road-strip {
+  position: absolute; top: 8%; bottom: 8%; left: 50%; width: 22px; transform: translateX(-50%);
+  background: rgba(140, 125, 95, 0.25); border-left: 1px dashed rgba(226, 184, 97, 0.4);
+  border-right: 1px dashed rgba(226, 184, 97, 0.4);
+}
+.roadmap-compass-n { position: absolute; top: 10px; right: 14px; font-family: 'Cinzel', serif; font-size: 0.85rem; color: #e6bc65; }
+.map-pin {
+  position: absolute; transform: translate(-50%, -50%); font-family: 'JetBrains Mono', monospace;
+  font-size: 0.67rem; padding: 0.18rem 0.45rem; border-radius: 4px; white-space: nowrap;
+  background: rgba(10, 13, 18, 0.85); border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.map-pin.safe { color: #fde68a; border-color: #f59e0b; }
+.map-pin.supply { color: #7dd3fc; border-color: #38bdf8; }
+.map-pin.supply.collected { color: #6ee7b7; border-color: #34d399; opacity: 0.7; }
+.map-pin.highway { color: #6ee7b7; border-color: #10b981; }
+.map-pin.gate { color: #fca5a5; border-color: #ef4444; }
+.map-pin.car { color: #fcd34d; }
+.map-player-marker { position: absolute; font-size: 1rem; color: #ff5733; text-shadow: 0 0 10px #ff5733; z-index: 4; }
+.roadmap-legend-row { display: flex; justify-content: space-between; font-size: 0.74rem; color: #b8c4d4; }
+.leg-safe { color: #f59e0b; } .leg-item { color: #38bdf8; } .leg-player { color: #ff5733; }
+
+.stalker-distortion-vignette {
+  position: absolute; inset: 0; z-index: 14; pointer-events: none;
+  background: radial-gradient(circle, transparent 40%, rgba(130, 10, 18, 0.58) 78%, rgba(4, 0, 0, 0.96) 100%);
+  transition: opacity 0.14s ease;
+}
+
+.demo-ending-overlay {
+  position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 2rem;
+  background: radial-gradient(circle, rgba(16, 26, 38, 0.94) 0%, #020305 80%);
+}
+.demo-ending-card { max-width: 560px; width: 100%; text-align: center; padding: 2.3rem 2rem; background: rgba(9, 15, 24, 0.94); border: 1px solid rgba(255, 190, 92, 0.38); border-radius: 12px; }
+.ending-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #6ee7b7; margin-bottom: 0.6rem; }
+.ending-title { font-family: 'Cinzel', serif; font-size: 1.65rem; color: #fffbeb; margin-bottom: 0.9rem; }
+.ending-description { font-size: 0.92rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 1.2rem; }
+.ending-summary-box { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.75; color: #a7f3d0; background: rgba(16, 28, 24, 0.7); padding: 0.85rem 1.1rem; border-radius: 6px; margin-bottom: 1.4rem; }
+.menu-btn.primary { width: 100%; padding: 0.85rem 1.2rem; font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fffdf9; background: linear-gradient(135deg, #c96f16 0%, #8f4607 100%); border: 1px solid #ffb85c; border-radius: 6px; cursor: pointer; }

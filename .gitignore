@@ -1,0 +1,16 @@
+@"
+# Dependencies
+node_modules/
+
+# Production build (Vercel builds this automatically)
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# Logs & Editor files
+npm-debug.log*
+.DS_Store
+.vscode/
+"@ | Out-File -FilePath .gitignore -Encoding utf8

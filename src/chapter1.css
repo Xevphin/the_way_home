@@ -1,0 +1,293 @@
+/* ============================================================================
+   src/chapter1.css
+   Styling for Sprint 1 (Chapter 1 — Morning Routine & The Invitation):
+   - Eye-opening wake-up fade overlay
+   - Non-blocking movie-style opening credits in the lower-left
+   - Bright-daylight readable HUD accents
+   - Clean Sprint 1 Checkpoint modal
+   ============================================================================ */
+
+.chapter1-page { position: relative; width: 100%; height: 100%; }
+
+/* Soft Eye-Opening Wake-Up Fade */
+.morning-blink-overlay {
+  position: absolute; inset: 0; z-index: 30; pointer-events: none;
+  background: #050608;
+  animation: morningWakeFade 1.75s ease-out forwards;
+}
+
+@keyframes morningWakeFade {
+  0% { opacity: 0.96; }
+  35% { opacity: 0.55; }
+  100% { opacity: 0; }
+}
+
+/* Fade-to-Black Transition Overlay When Entering Car at Evening */
+.fade-black-overlay {
+  position: absolute; inset: 0; z-index: 50; pointer-events: none;
+  background: #020305;
+  animation: fadeToBlackAnim 1.05s ease-in forwards;
+}
+
+@keyframes fadeToBlackAnim {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.top-menu-escape-btn.morning,
+.skip-cutscene-minimal.morning {
+  background: rgba(14, 18, 24, 0.48);
+  color: #f8fafc;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.interaction-prompt-minimal.morning-prompt {
+  padding: 0.38rem 0.85rem;
+  background: rgba(16, 18, 22, 0.58);
+  border-radius: 5px;
+  backdrop-filter: blur(4px);
+}
+
+/* Non-Blocking Movie-Style Opening Credits (Cleanly Tucked Lower-Left, Zero Prompt Overlap) */
+.movie-credits-float {
+  position: absolute; bottom: 22px; left: 24px; z-index: 22;
+  pointer-events: none; max-width: 280px;
+  padding: 0.4rem 0.8rem;
+  border-left: 2px solid rgba(246, 200, 120, 0.7);
+  background: linear-gradient(90deg, rgba(10, 12, 16, 0.55) 0%, rgba(10, 12, 16, 0) 100%);
+  animation: creditFadeIn 0.8s ease forwards;
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.movie-credits-float.fading-out {
+  opacity: 0; transform: translateY(-6px);
+}
+
+@keyframes creditFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.credits-card-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.24em; color: #fcd37d;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95); margin-bottom: 0.2rem;
+}
+
+.credits-card-title {
+  font-family: 'Cinzel', serif; font-size: 1.22rem; font-weight: 700;
+  letter-spacing: 0.08em; color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.98);
+}
+
+.credits-card-sub {
+  margin-top: 0.22rem; font-size: 0.82rem; font-style: italic;
+  color: rgba(241, 245, 249, 0.9);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.98);
+}
+
+/* End of Sprint 1 Checkpoint Overlay */
+.sprint-checkpoint-overlay {
+  position: absolute; inset: 0; z-index: 45;
+  display: flex; align-items: center; justify-content: center; padding: 2rem;
+  background: radial-gradient(circle at center, rgba(16, 22, 32, 0.78) 0%, rgba(4, 7, 12, 0.94) 100%);
+  backdrop-filter: blur(6px);
+  animation: creditFadeIn 0.6s ease forwards;
+}
+
+.sprint-checkpoint-card {
+  max-width: 560px; width: 100%; text-align: center;
+  padding: 2.2rem 2rem; border-radius: 12px;
+  background: rgba(11, 16, 24, 0.92);
+  border: 1px solid rgba(246, 200, 120, 0.42);
+  box-shadow: 0 28px 65px rgba(0, 0, 0, 0.85);
+}
+
+.checkpoint-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  letter-spacing: 0.2em; color: #fcd37d; margin-bottom: 0.65rem;
+}
+
+.checkpoint-title {
+  font-family: 'Cinzel', serif; font-size: 1.5rem; line-height: 1.3;
+  color: #fffdf7; margin-bottom: 1rem;
+}
+
+.checkpoint-task-callout {
+  font-size: 0.9rem; color: #a7f3d0;
+  background: rgba(16, 40, 32, 0.55); border: 1px solid rgba(110, 231, 183, 0.28);
+  padding: 0.55rem 0.9rem; border-radius: 6px; margin-bottom: 1rem;
+}
+
+.checkpoint-summary {
+  font-size: 0.9rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 1.45rem;
+}
+
+.checkpoint-actions {
+  display: flex; flex-direction: column; gap: 0.65rem;
+}
+
+.checkpoint-btn-secondary {
+  width: 100%; padding: 0.72rem 1rem; font-family: 'Cinzel', serif;
+  font-size: 0.88rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #dce4f0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 6px;
+  cursor: pointer; transition: all 0.18s ease;
+}
+.checkpoint-btn-secondary:hover {
+  border-color: #fbbf24; color: #ffffff; background: rgba(255, 185, 65, 0.14);
+}
+
+
+/* Centered Cinematic Sunset Time-Skip Intertitle ("A few hours later...") */
+.sunset-intertitle-overlay {
+  position: absolute; inset: 0; z-index: 35; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, rgba(28, 12, 32, 0.25) 0%, rgba(12, 6, 18, 0.58) 100%);
+  animation: sunsetIntertitleFade 5.3s ease-in-out forwards;
+}
+
+.sunset-intertitle-text {
+  font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 4.2vw, 3.1rem);
+  font-weight: 700; letter-spacing: 0.16em; color: #ffeed6;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95), 0 0 24px rgba(255, 138, 66, 0.55);
+}
+
+@keyframes sunsetIntertitleFade {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  76% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+
+/* Sprint 4: Spooky Wiki Story Vignette, Warm Montage Glow & 11:25 PM Phone */
+.spooky-cafe-vignette {
+  position: absolute; inset: 0; z-index: 16; pointer-events: none;
+  background: radial-gradient(circle, transparent 36%, rgba(8, 5, 16, 0.72) 82%, rgba(2, 2, 6, 0.94) 100%);
+  animation: creditFadeIn 1.1s ease forwards;
+}
+
+.montage-warm-glow {
+  position: absolute; inset: 0; z-index: 15; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 200, 110, 0.14) 0%, transparent 72%);
+  animation: creditFadeIn 0.8s ease forwards;
+}
+
+.phone-overlay-wrap {
+  position: absolute; right: 3.5%; bottom: 26%; z-index: 26;
+  pointer-events: none; animation: creditFadeIn 0.6s ease forwards;
+}
+
+.phone-device-frame {
+  width: 196px; padding: 0.92rem 0.85rem 1.05rem;
+  border-radius: 22px; background: linear-gradient(160deg, #101726 0%, #070b14 100%);
+  border: 3px solid #303a4d; text-align: center;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.85), 0 0 24px rgba(120, 175, 255, 0.22);
+}
+
+.phone-status-bar {
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  color: #94a3b8; margin-bottom: 0.65rem;
+}
+
+.phone-clock-big {
+  font-family: 'Inter', sans-serif; font-size: 2.55rem; font-weight: 800;
+  letter-spacing: 0.03em; color: #f8fafc; line-height: 1.05;
+}
+
+.phone-date-line {
+  font-size: 0.72rem; color: #cbd5e1; margin-bottom: 0.85rem;
+}
+
+.phone-notif-pill {
+  text-align: left; padding: 0.45rem 0.55rem; margin-bottom: 0.45rem;
+  border-radius: 8px; background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.phone-notif-app {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.08em; color: #fbbf24; margin-bottom: 0.14rem;
+}
+
+.phone-notif-body { font-size: 0.68rem; line-height: 1.32; color: #e2e8f0; }
+
+/* Post-Crash 1.5s Shock Recovery Blur + Vignette & Phantom Stall Strobe */
+.crash-shock-overlay {
+  position: absolute; inset: 0; z-index: 44; pointer-events: none;
+  backdrop-filter: blur(11px);
+  background: radial-gradient(circle, rgba(16, 12, 14, 0.25) 18%, rgba(3, 4, 8, 0.94) 85%);
+  animation: crashShockFade 1.6s ease-out forwards;
+}
+
+@keyframes crashShockFade {
+  0% { opacity: 1; backdrop-filter: blur(14px); }
+  55% { opacity: 0.78; backdrop-filter: blur(7px); }
+  100% { opacity: 0; backdrop-filter: blur(0px); }
+}
+
+.hallucination-strobe-overlay {
+  position: absolute; inset: 0; z-index: 48; pointer-events: none;
+  background: radial-gradient(circle, #ffffff 0%, #ffd6c9 55%, #4a080d 100%);
+  animation: halluStrobe 0.65s steps(3, end) infinite;
+}
+
+@keyframes halluStrobe {
+  0% { opacity: 0.98; }
+  35% { opacity: 0.2; }
+  65% { opacity: 0.95; }
+  100% { opacity: 0.1; }
+}
+
+/* Official Forestry Office Notice Paper Modal */
+.memo-paper-modal {
+  width: min(560px, 92vw); padding: 1.85rem 2rem; border-radius: 6px;
+  background: linear-gradient(165deg, #ece3cc 0%, #ded2b4 100%);
+  color: #1f1c17; box-shadow: 0 26px 70px rgba(0, 0, 0, 0.85);
+  border: 1px solid #b5a684; font-family: 'Georgia', serif;
+}
+
+.memo-top-stamp {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  letter-spacing: 0.08em; color: #4a4337; padding-bottom: 0.5rem;
+  border-bottom: 2px solid #302b23; margin-bottom: 0.7rem;
+}
+
+.memo-red-stamp {
+  color: #9e1b1b; border: 2px solid #9e1b1b; padding: 0.12rem 0.45rem;
+  font-weight: 800; letter-spacing: 0.14em; transform: rotate(-3deg);
+}
+
+.memo-agency-line { font-weight: 700; font-size: 0.84rem; letter-spacing: 0.05em; }
+.memo-date-line {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+  color: #5c5344; margin: 0.18rem 0 0.85rem;
+}
+
+.memo-doc-title {
+  font-size: 1.08rem; font-weight: 800; margin: 0 0 0.9rem;
+  line-height: 1.3; color: #17140f; text-decoration: underline;
+}
+
+.memo-body-copy p { font-size: 0.9rem; line-height: 1.56; margin: 0 0 0.8rem; }
+
+.memo-handwritten-warn {
+  color: #821717; font-style: italic; font-weight: 600;
+  border-left: 3px solid #9e1b1b; padding-left: 0.75rem;
+}
+
+.memo-footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 1.1rem; padding-top: 0.75rem; border-top: 1px dashed #8a7c60;
+}
+
+.memo-hint { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #5c5344; }
+
+.memo-close-btn {
+  padding: 0.48rem 1rem; border-radius: 4px; border: 1px solid #302b23;
+  background: #2b261f; color: #f5eedb; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+}

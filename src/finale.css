@@ -1,0 +1,285 @@
+/* ============================================================================
+   src/finale.css
+   Final Release UI & Finale Stylesheet:
+   - Refined Smoked-Glass Pause / Settings / Credits / Help Overlays
+   - Custom Warm Gold Hairline Dividers, Sliders & Tactile Keycap Badges
+   - Ustaz Impact Flash, 08:30 AM Wake-Up Blink, Rolling Movie Credits & Save Pill
+   ============================================================================ */
+
+/* REFINED SMOKED-GLASS MODALS (PAUSE, SETTINGS, CREDITS, HELP) */
+.pause-backdrop { z-index: 80; }
+.help-backdrop { z-index: 90; }
+
+.glass-modal {
+  width: min(460px, 92vw); padding: 2rem 2.2rem; border-radius: 14px;
+  background: linear-gradient(155deg, rgba(11, 15, 23, 0.78) 0%, rgba(5, 8, 14, 0.88) 100%);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 206, 126, 0.22);
+  box-shadow: 0 32px 84px rgba(0, 0, 0, 0.82), inset 0 1px 0 rgba(255, 236, 196, 0.08);
+}
+.pause-glass-modal { width: min(410px, 90vw); text-align: left; }
+.help-modal { width: min(520px, 92vw); }
+.credits-glass-modal { width: min(480px, 92vw); }
+
+.glass-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.66rem;
+  letter-spacing: 0.24em; color: rgba(246, 194, 108, 0.86); margin-bottom: 0.3rem;
+}
+.pause-title {
+  font-family: 'Cinzel', serif; font-size: 1.85rem; font-weight: 800;
+  letter-spacing: 0.16em; color: #fafcff; margin-bottom: 0.2rem;
+}
+.glass-hairline {
+  width: 100%; height: 1px; margin: 1.2rem 0;
+  background: linear-gradient(90deg, rgba(255, 204, 118, 0.38), rgba(255, 204, 118, 0.08));
+}
+
+/* CUSTOM STYLED GOLD RANGE SLIDERS */
+.glass-slider-group { display: block; margin-bottom: 1.15rem; }
+.glass-slider-group:last-child { margin-bottom: 0.15rem; }
+.glass-slider-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.86rem; color: #dbe5f2; margin-bottom: 0.55rem; letter-spacing: 0.02em;
+}
+.glass-slider-val {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #ffcf7d;
+}
+.glass-slider {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
+  border-radius: 99px; background: rgba(255, 255, 255, 0.14); outline: none; cursor: pointer;
+}
+.glass-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 15px; height: 15px; border-radius: 50%;
+  background: #ffcf7d; border: 2px solid #1b160d;
+  box-shadow: 0 0 12px rgba(255, 198, 102, 0.75); transition: transform 0.14s ease;
+}
+.glass-slider::-webkit-slider-thumb:hover { transform: scale(1.16); background: #ffe4ab; }
+.glass-slider::-moz-range-thumb {
+  width: 15px; height: 15px; border-radius: 50%;
+  background: #ffcf7d; border: 2px solid #1b160d;
+  box-shadow: 0 0 12px rgba(255, 198, 102, 0.75);
+}
+
+/* SMOKED-GLASS ACTION BUTTONS */
+.pause-nav-stack { display: flex; flex-direction: column; gap: 0.58rem; }
+.glass-footer-actions { display: flex; justify-content: flex-end; margin-top: 1.35rem; }
+.glass-btn {
+  width: 100%; padding: 0.72rem 1.2rem; border-radius: 7px;
+  background: rgba(255, 255, 255, 0.05); color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: 'Cinzel', serif; font-size: 0.92rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+  transition: all 0.18s ease;
+}
+.glass-btn:hover {
+  background: rgba(255, 200, 110, 0.14); border-color: rgba(255, 206, 122, 0.52); color: #ffffff;
+}
+.glass-btn.primary {
+  background: rgba(246, 178, 83, 0.18); border-color: rgba(255, 204, 118, 0.62); color: #ffe2a8;
+}
+.glass-btn.primary:hover {
+  background: rgba(246, 178, 83, 0.3); color: #ffffff;
+  box-shadow: 0 0 22px rgba(246, 178, 83, 0.24);
+}
+.glass-btn.subtle { color: #a7b5c9; border-color: rgba(255, 255, 255, 0.09); }
+.glass-footer-actions .glass-btn { width: auto; min-width: 120px; }
+
+/* DEDICATED HELP MODAL: KEYCAP BADGES & SURVIVAL TIPS */
+.help-section-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.66rem;
+  letter-spacing: 0.2em; color: #f6c46b; margin-bottom: 0.75rem;
+}
+.help-keybind-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.help-keybind-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.keycap-group { display: inline-flex; gap: 0.28rem; flex-shrink: 0; }
+.keycap-badge {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 28px;
+  padding: 0.24rem 0.5rem; border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700;
+  color: #ffe2a8; background: linear-gradient(180deg, rgba(36, 44, 58, 0.92), rgba(16, 21, 30, 0.96));
+  border: 1px solid rgba(255, 206, 126, 0.36);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.help-keybind-desc { font-size: 0.84rem; color: #cbd5e1; text-align: right; }
+.help-tips-list {
+  list-style: none; display: flex; flex-direction: column; gap: 0.55rem;
+}
+.help-tips-list li {
+  position: relative; padding-left: 1rem; font-size: 0.83rem; line-height: 1.5; color: #c4d0e0;
+}
+.help-tips-list li::before {
+  content: '✦'; position: absolute; left: 0; color: #f6b253; font-size: 0.7rem; top: 0.12rem;
+}
+
+/* OFFICIAL MAIN MENU CREDITS LIST */
+.credits-modal-list { display: flex; flex-direction: column; gap: 0.85rem; }
+.credits-modal-row {
+  display: flex; flex-direction: column; gap: 0.15rem;
+  padding-bottom: 0.65rem; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.credits-modal-row:last-child { border-bottom: none; padding-bottom: 0; }
+.credits-modal-role {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.66rem;
+  letter-spacing: 0.18em; color: #d9aa5b;
+}
+.credits-modal-name {
+  font-family: 'Cinzel', serif; font-size: 1.08rem; font-weight: 700; color: #f8fafc;
+}
+
+/* 0.25s WARM GOLDEN USTAZ LIGHT DOME IMPACT FLASH */
+.ustaz-impact-flash {
+  position: fixed; inset: 0; z-index: 36; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 250, 224, 0.95) 0%, rgba(255, 220, 128, 0.72) 60%, rgba(255, 196, 86, 0.35) 100%);
+  animation: ustazFlashPop 0.28s ease-out forwards;
+}
+@keyframes ustazFlashPop { 0% { opacity: 0.98; } 100% { opacity: 0; } }
+
+/* 3-SECOND TIRED EYE-BLINK / HEAVY EYELIDS WAKE-UP AT 08:30 AM */
+.wake-blink-overlay {
+  position: fixed; inset: 0; z-index: 34; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(5, 8, 14, 0.12) 22%, rgba(2, 4, 8, 0.96) 86%);
+  animation: tiredWakeBlink 3.1s ease-in-out forwards;
+}
+@keyframes tiredWakeBlink {
+  0% { opacity: 1; background-color: rgba(2, 3, 6, 0.98); }
+  22% { opacity: 0.52; background-color: rgba(2, 3, 6, 0.2); }
+  40% { opacity: 0.92; background-color: rgba(2, 3, 6, 0.85); }
+  66% { opacity: 0.32; background-color: rgba(2, 3, 6, 0.08); }
+  80% { opacity: 0.58; background-color: rgba(2, 3, 6, 0.35); }
+  100% { opacity: 0; background-color: transparent; }
+}
+
+/* MOVIE-STYLE VERTICAL ROLLING END CREDITS */
+.credits-cinema-screen {
+  position: fixed; inset: 0; z-index: 45; overflow: hidden;
+  background: #020306; color: #edf2f7; display: flex; justify-content: center;
+}
+.credits-crawl-track {
+  position: absolute; width: min(680px, 90vw); text-align: center;
+  top: 100%; animation: rollMovieCredits 22s linear forwards;
+}
+@keyframes rollMovieCredits {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(-100% - 108vh)); }
+}
+.credits-hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+  letter-spacing: 0.28em; color: #f6b253; margin-bottom: 0.7rem;
+}
+.credits-hero-title {
+  font-family: 'Cinzel', serif; font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 900; letter-spacing: 0.16em; color: #ffffff;
+  text-shadow: 0 0 28px rgba(255, 198, 108, 0.25);
+}
+.credits-hero-divider {
+  width: 110px; height: 2px; margin: 1.6rem auto 3.2rem;
+  background: linear-gradient(90deg, transparent, #f6b253, transparent);
+}
+.credits-block { margin-bottom: 2.8rem; }
+.credits-role {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem;
+  letter-spacing: 0.22em; color: #d6a456; margin-bottom: 0.55rem;
+}
+.credits-name {
+  font-family: 'Cinzel', serif; font-size: 1.28rem; font-weight: 600;
+  color: #f1f5f9; line-height: 1.5;
+}
+.credits-footer-note { margin-top: 3.5rem; font-style: italic; font-size: 1rem; color: #94a3b8; }
+
+/* POST-CREDITS TEASER OVERLAY ("It Will Return") */
+.post-credits-overlay {
+  position: fixed; inset: 0; z-index: 38;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 2rem;
+  background: radial-gradient(circle, rgba(2, 5, 11, 0.42) 0%, rgba(2, 4, 8, 0.86) 100%);
+  opacity: 0; pointer-events: none; transition: opacity 1.5s ease;
+}
+.post-credits-overlay.visible { opacity: 1; pointer-events: auto; }
+.post-credits-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+  letter-spacing: 0.28em; color: #f6b253; margin-bottom: 0.9rem;
+}
+.post-credits-title {
+  font-family: 'Cinzel', serif; font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 900; letter-spacing: 0.16em; color: #ffffff;
+  text-shadow: 0 6px 32px rgba(0, 0, 0, 0.95), 0 0 28px rgba(255, 178, 72, 0.32);
+  margin-bottom: 2.2rem;
+}
+.post-credits-btn { padding: 0.82rem 1.8rem; font-size: 0.95rem; }
+
+/* TOP-CORNER AUTO-SAVE ICON PULSE & LOADING SCREEN CONTROLS STRIP */
+.autosave-pill {
+  position: fixed; top: 1.42rem; right: 7.35rem; z-index: 42;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.36rem 0.78rem; border-radius: 99px;
+  background: rgba(8, 12, 18, 0.72); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 206, 118, 0.36);
+  pointer-events: none; animation: autosaveFade 2.2s ease forwards;
+}
+.autosave-ring {
+  width: 11px; height: 11px; border-radius: 50%;
+  border: 2px solid rgba(255, 206, 118, 0.28); border-top-color: #ffd070;
+  animation: autosaveSpin 0.75s linear infinite;
+}
+.autosave-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  letter-spacing: 0.16em; color: #ffdf9a;
+}
+@keyframes autosaveSpin { to { transform: rotate(360deg); } }
+@keyframes autosaveFade {
+  0% { opacity: 0; transform: translateY(-4px); }
+  14% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.loading-controls-strip {
+  text-align: center; padding: 0 1rem 0.65rem; white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem;
+  letter-spacing: 0.08em; color: rgba(212, 224, 240, 0.78);
+}
+
+/* CINEMATIC UPPER-MIDDLE "CHAPTER 1" FADE-IN/OUT TITLE CARD (top: 34%) */
+.chapter-title-card-overlay {
+  position: fixed; top: 34%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 28; pointer-events: none; text-align: center;
+  animation: chapterTitleFade 4.5s ease-in-out forwards;
+}
+.chapter-title-card-text {
+  font-family: 'Cinzel', serif; font-size: clamp(2.1rem, 4.6vw, 3.3rem);
+  font-weight: 800; letter-spacing: 0.28em; text-indent: 0.28em;
+  color: #ffffff;
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.92),
+    0 6px 26px rgba(0, 0, 0, 0.85),
+    0 0 18px rgba(0, 0, 0, 0.68);
+}
+.chapter-title-card-rule {
+  width: 120px; height: 2px; margin: 0.75rem auto 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 214, 128, 0.92), transparent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+@keyframes chapterTitleFade {
+  0% { opacity: 0; transform: translate(-50%, -44%); }
+  14% { opacity: 1; transform: translate(-50%, -50%); }
+  82% { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, -54%); }
+}
+
+/* CRISP 1.2s CINEMATIC BLACK CROSS-FADE CURTAIN (0.5s OUT + 0.2s HOLD + 0.5s IN) */
+.smooth-fade-curtain {
+  position: fixed; inset: 0; z-index: 48; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  background: #020306; transition: opacity 0.5s ease;
+}
+.fade-transition-caption {
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(0.76rem, 1.4vw, 0.92rem);
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: rgba(246, 206, 134, 0.86);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+  padding: 0 1.5rem; text-align: center;
+}
+.impact-shock-cut {
+  position: fixed; inset: 0; z-index: 49; pointer-events: none; background: #000000;
+}
