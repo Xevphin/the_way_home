@@ -7,7 +7,7 @@
 //   the Forestry Office memo or experiences the Phantom Stall hallucination!
 // ============================================================================
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import RuralRoadWorld from './RuralRoadWorld';
 import StalledSedan from './StalledSedan';
@@ -54,6 +54,7 @@ export default function GameWorldScene({
   playerYawRef,
   respawnCount,
   onCutsceneUpdate,
+  onOneShotFlash,
   onImpactShock,
   onCutsceneComplete,
   onToggleFlashlight,
@@ -69,6 +70,7 @@ export default function GameWorldScene({
   onSubtitle,
   onStallSeqComplete,
 }) {
+  const flashFigureRef = useRef();
   const inCabin = inCutscene && cutsceneState.inCabin;
   const activeHeadlightPower = inCutscene ? cutsceneState.headlightPower : 0.42;
   const highBeamsOn = inCabin && activeHeadlightPower > 0.5;
@@ -127,7 +129,8 @@ export default function GameWorldScene({
         <CarCabinOverlay3D
           visible={inCabin}
           hazardsOn={cutsceneState.hazardsOn}
-          showFlashFigure={inCutscene && cutsceneState.showFlashFigure}
+          showFlashFigure={false}
+          flashFigureRef={flashFigureRef}
           radioActive={true}
           radioStatic={Boolean(cutsceneState.radioStatic)}
         />
@@ -139,7 +142,9 @@ export default function GameWorldScene({
         active={inCutscene}
         paused={paused}
         sedanGroupRef={sedanGroupRef}
+        flashFigureRef={flashFigureRef}
         onCutsceneUpdate={onCutsceneUpdate}
+        onOneShotFlash={onOneShotFlash}
         onImpactShock={onImpactShock}
         onComplete={onCutsceneComplete}
       />

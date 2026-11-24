@@ -37,6 +37,7 @@ export default function CarCabinOverlay3D({
   visible = false,
   hazardsOn = false,
   showFlashFigure = false,
+  flashFigureRef = null,
   radioActive = true,
   radioStatic = false,
   steerAngle = 0,
@@ -76,8 +77,8 @@ export default function CarCabinOverlay3D({
 
   return (
     <group>
-      {/* Keep 360° Car Cabin Permanently Mounted (toggle visible/intensity so zero shader recompile!) */}
-      <group visible={visible} position={[0, 0, 0]}>
+      {/* Keep 360° Car Cabin ALWAYS visible=true (parked at y=-50 when outside -> 0ms shader compile on exit!) */}
+      <group position={[0, visible ? 0 : -50, 0]}>
           <CarCabinShell3D />
 
           {/* Dashboard Top Shelf */}
@@ -148,22 +149,8 @@ export default function CarCabinOverlay3D({
                   />
                 </mesh>
               ))}
-              <pointLight
-                position={[0, 0.04, 0.16]}
-                color={radioStatic ? '#ff643d' : '#4ce6d0'}
-                intensity={visible ? (radioStatic ? 1.4 : 0.72) : 0}
-                distance={1.6}
-              />
             </group>
           )}
-
-          {/* Subtle Dashboard Illumination Light */}
-          <pointLight
-            position={[-0.35, 1.05, -0.42]}
-            color="#58d6a3"
-            intensity={visible ? 0.45 : 0}
-            distance={1.6}
-          />
 
           {/* Steering Wheel (Turns Smoothly With Road Curves) */}
           <group ref={wheelRef} position={[-0.36, 0.93, -0.34]} rotation={[-0.28, 0, 0]}>
@@ -194,8 +181,8 @@ export default function CarCabinOverlay3D({
           ))}
       </group>
 
-      {/* Dark Supernatural Figure (permanently mounted; toggle visible/intensity so zero hitch at impact!) */}
-      <group visible={showFlashFigure} position={[-0.1, 0.0, -4.6]}>
+      {/* Dark Supernatural Figure: ALWAYS visible (parked at y=-50 until ref moves it onto road -> 0ms compile!) */}
+      <group ref={flashFigureRef} position={[-0.1, showFlashFigure ? 0.0 : -50, -4.6]}>
         <mesh position={[0, 1.25, 0]}>
           <coneGeometry args={[0.62, 2.5, 10]} />
           <meshStandardMaterial color="#090b10" roughness={0.9} />
@@ -210,16 +197,10 @@ export default function CarCabinOverlay3D({
         </mesh>
         {[-0.08, 0.08].map((ex, i) => (
           <mesh key={i} position={[ex, 2.58, 0.28]}>
-            <sphereGeometry args={[0.042, 8, 8]} />
+            <sphereGeometry args={[0.048, 8, 8]} />
             <meshBasicMaterial color="#fff1c7" />
           </mesh>
         ))}
-        <pointLight
-          position={[0, 1.8, 1.1]}
-          color="#ffe9b8"
-          intensity={showFlashFigure ? 5.5 : 0}
-          distance={7}
-        />
       </group>
     </group>
   );

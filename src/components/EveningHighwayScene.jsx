@@ -18,32 +18,40 @@ import NightSkyDome from './NightSkyDome';
 import ModelAsset from './ModelAsset';
 import Route312BranchRoad from './Route312BranchRoad';
 import { MODELS } from '../data/modelCatalog';
+import { getSubtitleDurationMs, getSubtitleStepMs } from '../data/dialogueTiming';
 import {
   startDrivingEngineAudio,
   stopDrivingEngineAudio,
 } from './AmbientMusicAudio';
 
-// Snappy, brisk driving dialogue pacing so the evening drive flows naturally
-const HIGHWAY_TIMELINE = {
-  lines: [
-    {
-      time: 0.4,
-      tag: '07:05 PM',
-      text: 'Cruising along the evening highway toward the cafe... traffic is moving pretty smoothly.',
-    },
-    {
-      time: 4.5,
-      tag: 'INNER THOUGHT',
-      text: 'Wait—junction ahead. Route 312 on the left cuts through Lembah Batu and Kampung Hulu... completely unlit into the dark forest.',
-    },
-    {
-      time: 8.6,
-      tag: 'INNER THOUGHT',
-      text: "No way I'm taking a dark rural trunk road right now. Common sense says stay straight on the lit E18 highway toward Taman Permai.",
-    },
-  ],
-  totalSec: 13.6,
-};
+const RAW_HIGHWAY_LINES = [
+  {
+    tag: '07:05 PM',
+    text: 'Cruising along the evening highway toward the cafe... traffic is moving pretty smoothly.',
+  },
+  {
+    tag: 'INNER THOUGHT',
+    text: 'Wait—junction ahead. Route 312 on the left cuts through Lembah Batu and Kampung Hulu... completely unlit into the dark forest.',
+  },
+  {
+    tag: 'INNER THOUGHT',
+    text: "No way I'm taking a dark rural trunk road right now. Common sense says stay straight on the lit E18 highway toward Taman Permai.",
+  },
+];
+
+// Dynamically compute subtitle timings so no highway line ever cuts off mid-typing (+0.9s pause)
+function buildHighwayTimeline() {
+  let cursor = 0.4;
+  const lines = RAW_HIGHWAY_LINES.map((entry) => {
+    const start = cursor;
+    const typingSec = (entry.text.length * getSubtitleStepMs(entry.tag)) / 1000;
+    const durSec = Math.max(getSubtitleDurationMs(entry.text, entry.tag) / 1000, typingSec + 0.9);
+    cursor = start + durSec;
+    return { ...entry, time: start };
+  });
+  return { lines, totalSec: cursor + 0.2 };
+}
+const HIGHWAY_TIMELINE = buildHighwayTimeline();
 
 export default function EveningHighwayScene({
   active,

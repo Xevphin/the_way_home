@@ -60,15 +60,15 @@ export default function StalledSedan({
 
   return (
     <group position={position} rotation={rotation}>
-      {/* Keep Exterior GLB & Interior Hood Mounted (toggle visible so zero hitch on crash/exit!) */}
-      <group visible={!interiorView}>
+      {/* Keep Exterior GLB & Interior Hood ALWAYS visible=true (park at y=-50 -> 0ms shader compile on exit!) */}
+      <group position={[0, interiorView ? -50 : 0, 0]}>
         <ModelAsset
           url={MODELS.sedan}
           rotation={[0, Math.PI, 0]}
           targetLength={4.38}
         />
       </group>
-      <group visible={interiorView}>
+      <group position={[0, interiorView ? 0 : -50, 0]}>
         <mesh position={[0, 0.85, -1.55]}>
           <boxGeometry args={[1.82, 0.08, 1.24]} />
           <meshStandardMaterial color="#2f3c4d" roughness={0.38} metalness={0.62} />
@@ -79,8 +79,8 @@ export default function StalledSedan({
         </mesh>
       </group>
 
-      {/* Post-Crash Hood Dent Crater & Steam (permanently mounted; toggle visible/intensity only!) */}
-      <group visible={isDented}>
+      {/* Post-Crash Hood Dent Crater & Steam (parked at y=-50 until dented; light kept outside so 0 shader compile!) */}
+      <group position={[0, isDented ? 0 : -50, 0]}>
         <mesh position={[0, 0.82, -1.94]} rotation={[0.38, 0, 0]}>
           <cylinderGeometry args={[0.42, 0.24, 0.38, 12]} />
           <meshStandardMaterial color="#0b0e14" roughness={0.82} metalness={0.85} />
@@ -89,12 +89,6 @@ export default function StalledSedan({
           <boxGeometry args={[0.56, 0.05, 0.45]} />
           <meshStandardMaterial color="#738091" roughness={0.42} metalness={0.9} />
         </mesh>
-        <pointLight
-          position={[0, 1.55, -2.45]}
-          intensity={isDented ? (inspected ? 0.8 : 1.8) : 0}
-          distance={4.8}
-          color="#ffd39b"
-        />
         <group ref={steamGroupRef} position={[0, 0, -1.85]}>
           {[0, 1, 2].map((idx) => (
             <mesh key={idx} position={[(idx - 1) * 0.14, 1.0, 0]}>
@@ -109,6 +103,12 @@ export default function StalledSedan({
           ))}
         </group>
       </group>
+      <pointLight
+        position={[0, 1.55, -2.45]}
+        intensity={isDented ? (inspected ? 0.8 : 1.8) : 0}
+        distance={4.8}
+        color="#ffd39b"
+      />
 
       {/* Dual Front Headlights + Permanently Mounted SpotLights (zero shader recompile on flicker!) */}
       {[-0.66, 0.66].map((xOff, i) => (

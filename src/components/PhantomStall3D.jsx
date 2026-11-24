@@ -133,42 +133,74 @@ function PulsingOrganicVeins() {
 
 export default function PhantomStall3D({ dinersStare = false, revealed = false }) {
   const { x, z, rotY } = LANDMARK_TRANSFORMS.phantomStall;
+  const illusionGroupRef = useRef();
+  const veinsGroupRef = useRef();
+  const bulbMatsRef = useRef([]);
+  const awningMatRef = useRef();
+
+  // Pure ref positioning (parked at y=-50) + emissiveIntensity glow (0 dynamic 3D lights -> 0ms shader compile!)
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    if (illusionGroupRef.current) illusionGroupRef.current.position.y = revealed ? -50 : 0;
+    if (veinsGroupRef.current) veinsGroupRef.current.position.y = revealed ? 0 : -50;
+
+    const flicker = dinersStare ? (Math.sin(t * 28) > -0.25 ? 2.4 : 0.45) : 3.2;
+    for (let i = 0; i < bulbMatsRef.current.length; i += 1) {
+      const mat = bulbMatsRef.current[i];
+      if (mat) mat.emissiveIntensity = revealed ? 0 : flicker;
+    }
+    if (awningMatRef.current) {
+      awningMatRef.current.emissiveIntensity = revealed ? 0.04 : dinersStare ? flicker * 0.22 : 0.55;
+    }
+  });
 
   return (
     <group position={[x, 0, z]} rotation={[0, rotY, 0]}>
       <group>
         {/* Floor Slab & Rotted / Warm Wooden Roof */}
-        <mesh position={[0, 0.06, 0]} receiveShadow>
+        <mesh position={[0, 0.06, 0]}>
           <boxGeometry args={[5.4, 0.12, 8.2]} />
-          <meshStandardMaterial color={revealed ? '#1a1716' : '#4a3d31'} roughness={0.92} />
+          <meshLambertMaterial color={revealed ? '#1a1716' : '#4a3d31'} />
         </mesh>
-        <mesh position={[0.1, 2.82, 0]} rotation={[0, 0, revealed ? 0.14 : -0.1]} castShadow>
+        <mesh position={[0.1, 2.82, 0]} rotation={[0, 0, revealed ? 0.14 : -0.1]}>
           <boxGeometry args={[5.8, 0.16, 8.6]} />
-          <meshStandardMaterial color={revealed ? '#1b1615' : '#633728'} roughness={0.85} />
+          <meshStandardMaterial
+            ref={awningMatRef}
+            color={revealed ? '#1b1615' : '#633728'}
+            emissive="#ff9f43"
+            emissiveIntensity={0.55}
+            roughness={0.85}
+          />
         </mesh>
         {/* Wooden Support Posts */}
         {[[-2.1, -3.5], [1.9, -3.5], [-2.1, 3.5], [1.9, 3.5]].map(([px, pz], i) => (
           <mesh key={i} position={[px, 1.42, pz]} rotation={[0, 0, revealed && i === 1 ? 0.12 : 0]}>
             <boxGeometry args={[0.2, 2.8, 0.2]} />
-            <meshStandardMaterial color={revealed ? '#211917' : '#4f3522'} roughness={0.88} />
+            <meshLambertMaterial color={revealed ? '#211917' : '#4f3522'} />
           </mesh>
         ))}
         {/* Back Wall & Cooking Counter */}
         <mesh position={[-2.1, 1.42, 0]}>
           <boxGeometry args={[0.18, 2.75, 7.2]} />
-          <meshStandardMaterial color={revealed ? '#181414' : '#573c28'} roughness={0.9} />
+          <meshLambertMaterial color={revealed ? '#181414' : '#573c28'} />
         </mesh>
-        <mesh position={[-0.75, 0.56, 0]} castShadow>
+        <mesh position={[-0.75, 0.56, 0]}>
           <boxGeometry args={[1.15, 0.96, 5.4]} />
-          <meshStandardMaterial color={revealed ? '#1c1715' : '#6e4c32'} roughness={0.82} />
+          <meshLambertMaterial color={revealed ? '#1c1715' : '#6e4c32'} />
         </mesh>
 
-        {/* PHASE A: Warm Glowing Illusion Bulbs, Tables & Steaming Dishes (lights kept mounted, intensity=0 when revealed) */}
-        <group visible={!revealed}>
+        {/* PHASE A: Always visible=true (parked at y=-50 via ref on reveal; emissive-only glow, zero lights!) */}
+        <group ref={illusionGroupRef}>
           {[-2.4, -0.8, 0.8, 2.4].map((bz, i) => (
             <mesh key={i} position={[1.45, 2.52, bz]}>
-              <sphereGeometry args={[0.11, 10, 10]} />
-              <meshBasicMaterial color={dinersStare ? '#ffd29e' : '#ffe59c'} />
+              <sphereGeometry args={[0.13, 10, 10]} />
+              <meshStandardMaterial
+                ref={(el) => { bulbMatsRef.current[i] = el; }}
+                color={dinersStare ? '#ffd29e' : '#ffe59c'}
+                emissive={dinersStare ? '#ff9d52' : '#ffcf66'}
+                emissiveIntensity={3.2}
+                roughness={0.2}
+              />
             </mesh>
           ))}
           <ModelAsset url={MODELS.roundTable} position={[2.25, 0.1, -0.6]} targetHeight={0.78} />
@@ -176,35 +208,19 @@ export default function PhantomStall3D({ dinersStare = false, revealed = false }
           {[[-0.6, 2.25], [1.65, 2.35]].map(([tz, tx], idx) => (
             <mesh key={idx} position={[tx, 0.9, tz]}>
               <cylinderGeometry args={[0.2, 0.16, 0.04, 12]} />
-              <meshStandardMaterial color="#ede8dd" roughness={0.4} />
+              <meshLambertMaterial color="#ede8dd" />
             </mesh>
           ))}
+          {DINER_CONFIGS.map((cfg) => (
+            <UncannyDiner key={cfg.id} cfg={cfg} stare={dinersStare} />
+          ))}
         </group>
-        <pointLight
-          position={[1.8, 2.55, 0]}
-          color={dinersStare ? '#ff9d52' : '#ffc266'}
-          intensity={revealed ? 0 : dinersStare ? 5.5 : 14.0}
-          distance={26}
-        />
-        <pointLight
-          position={[3.6, 1.8, 0]}
-          color="#ffbe5c"
-          intensity={revealed ? 0 : 5.2}
-          distance={18}
-        />
 
-        {/* PHASE B: Pitch-Dark Rotted Reality Covered in Pulsing Organic Veins (pre-mounted, zero shader compile!) */}
-        <group visible={revealed}>
+        {/* PHASE B: Pitch-Dark Rotted Reality Veins (always visible=true, parked at y=-50 via ref until reveal!) */}
+        <group ref={veinsGroupRef} position={[0, -50, 0]}>
           <PulsingOrganicVeins />
         </group>
-        <pointLight position={[0.4, 1.35, 0]} color="#7a111c" intensity={revealed ? 1.8 : 0} distance={8.5} />
       </group>
-
-      {/* PHASE A: 4 Uncanny Diners Quietly Eating / Turning in Unison to Stare */}
-      {!revealed &&
-        DINER_CONFIGS.map((cfg) => (
-          <UncannyDiner key={cfg.id} cfg={cfg} stare={dinersStare} />
-        ))}
     </group>
   );
 }

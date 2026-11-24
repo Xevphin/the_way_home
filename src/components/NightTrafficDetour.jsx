@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { NIGHT_DETOUR_SCRIPT } from '../data/sprint4Data';
+import { getSubtitleDurationMs, getSubtitleStepMs } from '../data/dialogueTiming';
 import StalledSedan from './StalledSedan';
 import TrafficCarModel from './TrafficCarModel';
 import CarCabinOverlay3D from './CarCabinOverlay3D';
@@ -27,12 +28,20 @@ import {
   stopDrivingEngineAudio,
 } from './AmbientMusicAudio';
 
-// Snappy brisk driving dialogue pacing for the Route 312 left detour
-const DETOUR_TIMELINE = {
-  lines: NIGHT_DETOUR_SCRIPT,
-  turnStart: 11.0,
-  totalSec: 16.4,
-};
+// Dynamically compute every detour subtitle cue so NO line ever cuts off mid-typing (+0.9s reading pause!)
+function buildDetourTimeline() {
+  let cursor = 0.6;
+  const lines = NIGHT_DETOUR_SCRIPT.map((entry) => {
+    const startSec = cursor;
+    const typingSec = (entry.text.length * getSubtitleStepMs(entry.tag)) / 1000;
+    const durSec = Math.max(getSubtitleDurationMs(entry.text, entry.tag) / 1000, typingSec + 0.9);
+    cursor = startSec + durSec;
+    return { ...entry, timeSec: startSec };
+  });
+  const turnStart = lines[2].timeSec + 2.4;
+  return { lines, turnStart, totalSec: cursor + 0.2 };
+}
+const DETOUR_TIMELINE = buildDetourTimeline();
 
 export default function NightTrafficDetour({
   active,

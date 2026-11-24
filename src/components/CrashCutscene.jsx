@@ -35,12 +35,15 @@ export default function CrashCutscene({
   active,
   paused = false,
   sedanGroupRef,
+  flashFigureRef,
   onCutsceneUpdate,
+  onOneShotFlash,
   onImpactShock,
   onComplete,
 }) {
   const { camera } = useThree();
   const elapsedRef = useRef(0);
+  const hasFlashedRef = useRef(false);
   const crashPlayedRef = useRef(false);
   const sputterPlayedRef = useRef(false);
   const hazardTickRef = useRef(0);
@@ -57,24 +60,28 @@ export default function CrashCutscene({
     onCutsceneUpdate(next);
   };
 
-  // Dynamic beat schedule ensuring both FM Radio lines finish typing + full read time
+  // Dynamic beat schedule ensuring EVERY pre- & post-crash line finishes typing + full reading pause!
   const schedule = useMemo(() => {
     const line1 = FOREST_RADIO_SCRIPT[0];
     const line2 = FOREST_RADIO_SCRIPT[1];
     const d1 = getSubtitleDurationMs(line1.text, line1.tag) / 1000;
     const d2 = getSubtitleDurationMs(line2.text, line2.tag) / 1000;
+    const dDead = getSubtitleDurationMs(MONOLOGUE.cutsceneBeat2Dead.text, MONOLOGUE.cutsceneBeat2Dead.tag) / 1000;
+    const dExit = getSubtitleDurationMs(MONOLOGUE.cutsceneBeat3Exit.text, MONOLOGUE.cutsceneBeat3Exit.tag) / 1000;
     const t1 = 0.5;
     const t2 = t1 + d1;
     const flashStart = t2 + d2;
     const impactTime = flashStart + 0.65;
-    const exitStart = impactTime + 2.0;
-    const total = exitStart + 2.3;
-    return { line1, line2, t1, t2, flashStart, impactTime, exitStart, total };
+    const deadStart = impactTime + 0.45;
+    const swearStart = deadStart + dDead;
+    const total = swearStart + dExit;
+    return { line1, line2, t1, t2, flashStart, impactTime, deadStart, swearStart, total };
   }, []);
 
   useEffect(() => {
     if (!active || paused) return undefined;
     elapsedRef.current = 0;
+    hasFlashedRef.current = false;
     crashPlayedRef.current = false;
     sputterPlayedRef.current = false;
     hazardTickRef.current = 0;
@@ -129,44 +136,42 @@ export default function CrashCutscene({
       return;
     }
 
-    // BEAT 2A: Tall dark figure flashes straight across high beams!
+    // BEAT 2A: Tall dark figure steps into high beams via PURE REF + strict one-shot 0.85 flash pop!
     if (t < schedule.impactTime) {
+      if (!hasFlashedRef.current) {
+        hasFlashedRef.current = true;
+        onOneShotFlash?.(0.85);
+      }
       const p = (t - schedule.flashStart) / (schedule.impactTime - schedule.flashStart);
       const carZ = THREE.MathUtils.lerp(2.6, 0.0, p);
       if (sedanGroupRef.current) sedanGroupRef.current.position.set(1.2, 0, carZ);
+      if (flashFigureRef?.current) {
+        flashFigureRef.current.position.set(THREE.MathUtils.lerp(-1.45, -0.1, Math.min(1, p * 2.2)), 0.0, -4.6);
+      }
       camera.position.set(0.84, 1.18, carZ + 0.06);
       lookTargetRef.current.set(1.15, 1.32, carZ - 5.2);
       camera.lookAt(lookTargetRef.current);
-
-      emitCutsceneState({
-        inCabin: true,
-        isDented: false,
-        headlightPower: 2.3,
-        hazardsOn: false,
-        showFlashFigure: true,
-        radioStatic: false,
-        captionTag: '',
-        caption: 'WAIT—WHAT IS THAT?!',
-      });
       return;
     }
 
-    // BEAT 2B: Tire screech, FM static cut, metallic CRUNCH, jolt & 0.35s black shock cut
+    // BEAT 2B: Instant 0.35s CSS black cut + pre-warmed crash audio + hide Lurker via ref (0ms hitch!)
     if (!crashPlayedRef.current) {
       crashPlayedRef.current = true;
+      if (flashFigureRef?.current) flashFigureRef.current.position.set(-0.1, -50, -4.6);
+      onImpactShock?.();
       stopDrivingEngineAudio();
       triggerRadioStaticCut();
-      onImpactShock?.();
     }
     if (sedanGroupRef.current) sedanGroupRef.current.position.set(1.2, 0, 0);
 
-    if (t < schedule.exitStart) {
+    // Stay in stalled cabin while BOTH post-crash lines finish typing cleanly (exit swap happens behind 0.3s black fade!)
+    if (t < schedule.total) {
       const age = t - schedule.impactTime;
-      if (age > 0.65 && !sputterPlayedRef.current) {
+      if (age > 0.55 && !sputterPlayedRef.current) {
         sputterPlayedRef.current = true;
         playEngineSputter();
       }
-      const hazardsActive = age > 0.9;
+      const hazardsActive = age > 0.8;
       if (hazardsActive) {
         hazardTickRef.current += dt;
         if (hazardTickRef.current >= 0.41) {
@@ -176,54 +181,32 @@ export default function CrashCutscene({
         }
       }
 
-      const decay = Math.max(0, 1 - age / 1.45);
-      const sx = (Math.random() - 0.5) * 0.34 * decay;
-      const sy = (Math.random() - 0.5) * 0.28 * decay;
+      const decay = Math.max(0, 1 - age / 1.35);
+      const sx = (Math.random() - 0.5) * 0.32 * decay;
+      const sy = (Math.random() - 0.5) * 0.26 * decay;
 
       camera.position.set(0.84 + sx, 1.18 + sy, 0.06);
       lookTargetRef.current.set(0.95 + sx * 2, 0.98 + sy * 2, -12.0);
       camera.lookAt(lookTargetRef.current);
 
-      // Avoid 60fps React re-renders on impact: lights snap dark during 0.35s shock cut, then dim to 0.42
-      emitCutsceneState({
-        inCabin: true,
-        isDented: true,
-        headlightPower: age < 0.35 ? 0.04 : 0.42,
-        hazardsOn: hazardsActive,
-        showFlashFigure: false,
-        radioStatic: true,
-        captionTag: age > 0.75 ? MONOLOGUE.cutsceneBeat2Dead.tag : '',
-        caption: age > 0.75 ? MONOLOGUE.cutsceneBeat2Dead.text : 'WAIT—WHAT IS THAT?!',
-      });
-      return;
-    }
-
-    // BEAT 3: Step out driver's door directly beside the stalled car at [-0.8, 1.7, -0.5]
-    if (t < schedule.total) {
-      const p = (t - schedule.exitStart) / (schedule.total - schedule.exitStart);
-      const s = p * p * (3 - 2 * p);
-      camera.position.set(
-        THREE.MathUtils.lerp(0.55, -0.8, s),
-        THREE.MathUtils.lerp(1.25, 1.7, s),
-        THREE.MathUtils.lerp(0.05, -0.5, s)
-      );
-      lookTargetRef.current.set(
-        THREE.MathUtils.lerp(0.6, 1.2, s),
-        THREE.MathUtils.lerp(1.05, 0.85, s),
-        THREE.MathUtils.lerp(-14.0, -2.2, s)
-      );
-      camera.lookAt(lookTargetRef.current);
-
-      emitCutsceneState({
-        inCabin: false,
-        isDented: true,
-        headlightPower: 0.42,
-        hazardsOn: true,
-        showFlashFigure: false,
-        radioStatic: true,
-        captionTag: MONOLOGUE.cutsceneBeat3Exit.tag,
-        caption: MONOLOGUE.cutsceneBeat3Exit.text,
-      });
+      if (age >= 0.12) {
+        const line =
+          t >= schedule.swearStart
+            ? MONOLOGUE.cutsceneBeat3Exit
+            : t >= schedule.deadStart
+              ? MONOLOGUE.cutsceneBeat2Dead
+              : { tag: '', text: '' };
+        emitCutsceneState({
+          inCabin: true,
+          isDented: true,
+          headlightPower: 0.42,
+          hazardsOn: hazardsActive,
+          showFlashFigure: false,
+          radioStatic: true,
+          captionTag: line.tag,
+          caption: line.text,
+        });
+      }
       return;
     }
 

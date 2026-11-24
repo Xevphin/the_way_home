@@ -6,8 +6,6 @@
 // - Dramatic crash cut: radio cuts to harsh static + tire screech + metal crunch
 // ============================================================================
 
-import { playCrashImpactThud } from './AudioEngine';
-
 let audioCtx = null;
 let masterGain = null;
 let radioGain = null;
@@ -218,17 +216,25 @@ export function triggerRadioStaticCut() {
   screech.start(now);
   screech.stop(now + 0.48);
 
-  // 3) Metallic impact crunch (pre-warmed buffer + low thud)
+  // 3) Metallic impact crunch + low impact thud (100% pre-warmed buffers, zero alloc on impact!)
   const crunch = ctx.createBufferSource();
   crunch.buffer = prewarmedCrunchBuf;
   const cGain = ctx.createGain();
-  cGain.gain.setValueAtTime(0.52, now + 0.08);
+  cGain.gain.setValueAtTime(0.55, now + 0.08);
   cGain.gain.exponentialRampToValueAtTime(0.002, now + 0.62);
   crunch.connect(cGain);
   cGain.connect(masterGain);
   crunch.start(now + 0.08);
 
-  setTimeout(() => {
-    playCrashImpactThud();
-  }, 180);
+  const thud = ctx.createOscillator();
+  const thudGain = ctx.createGain();
+  thud.type = 'sawtooth';
+  thud.frequency.setValueAtTime(120, now + 0.12);
+  thud.frequency.exponentialRampToValueAtTime(22, now + 0.62);
+  thudGain.gain.setValueAtTime(0.75, now + 0.12);
+  thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+  thud.connect(thudGain);
+  thudGain.connect(masterGain);
+  thud.start(now + 0.12);
+  thud.stop(now + 0.72);
 }

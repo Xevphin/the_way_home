@@ -45,21 +45,21 @@ export default function PhantomStallSequence({
 }) {
   const { camera } = useThree();
   const elapsedRef = useRef(0);
+  const hasFlashedRef = useRef(false);
   const startPosRef = useRef(new THREE.Vector3(-4.2, 1.7, -214.5));
   const stageFlagsRef = useRef({ s1: false, s2: false, s3: false, s4: false, s5: false, done: false });
 
   useEffect(() => {
     if (!active) return undefined;
     elapsedRef.current = 0;
+    hasFlashedRef.current = false;
     startPosRef.current.copy(camera.position);
     stageFlagsRef.current = { s1: false, s2: false, s3: false, s4: false, s5: false, done: false };
     onDinersStare(false);
-    onFlashStrobe(false);
     return () => {
-      onFlashStrobe(false);
       setAmbienceSilence(false);
     };
-  }, [active, camera, onDinersStare, onFlashStrobe]);
+  }, [active, camera, onDinersStare]);
 
   useFrame((_, delta) => {
     if (!active) return;
@@ -88,18 +88,20 @@ export default function PhantomStallSequence({
       onSubtitle(BEAT_LINES.b3, getSubtitleDurationMs(BEAT_LINES.b3.text, BEAT_LINES.b3.tag));
     }
 
-    // Beat 4: Sharp sting + strobe flash -> reveal pitch-dark veined reality!
+    // Beat 4: Sharp sting + strict one-shot 0.75 flash pop -> reveal pitch-dark veined reality!
     if (!f.s4 && t >= T_FLASH) {
       f.s4 = true;
       playHallucinationSting();
-      onFlashStrobe(true);
+      if (!hasFlashedRef.current) {
+        hasFlashedRef.current = true;
+        onFlashStrobe?.(0.75);
+      }
       onRevealReality();
     }
 
-    // Beat 5: Strobe clears, player stumbles back recalling Amir's story
+    // Beat 5: Player stumbles back recalling Amir's story
     if (!f.s5 && t >= T_CLEAR) {
       f.s5 = true;
-      onFlashStrobe(false);
       onSubtitle(BEAT_LINES.b4, getSubtitleDurationMs(BEAT_LINES.b4.text, BEAT_LINES.b4.tag));
     }
 
@@ -134,7 +136,6 @@ export default function PhantomStallSequence({
 
     if (t >= SEQUENCE_DURATION && !f.done) {
       f.done = true;
-      onFlashStrobe(false);
       onDinersStare(false);
       setAmbienceSilence(false);
       playerPosRef.current.copy(stumblePos);

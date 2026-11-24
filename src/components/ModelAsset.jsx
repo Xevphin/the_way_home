@@ -44,6 +44,7 @@ function LoadedModel({
       if (child.isMesh) {
         child.castShadow = castShadow;
         child.receiveShadow = receiveShadow;
+        child.frustumCulled = false;
         if (tint && child.material) {
           child.material = child.material.clone();
           child.material.color.multiply(new THREE.Color(tint));

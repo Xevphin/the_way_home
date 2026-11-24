@@ -47,7 +47,6 @@ export default function GamePage({
     initialSpawn.skipCutscene ? POST_CRASH_STATE : INITIAL_CUTSCENE_STATE
   );
   const [entryFadeOpacity, setEntryFadeOpacity] = useState(initialSpawn.skipCutscene ? 0 : 1);
-  const [impactShock, setImpactShock] = useState(false);
   const [shockRecovery, setShockRecovery] = useState(false);
   const [flashlightOn, setFlashlightOn] = useState(true);
   const [activeSafeZone, setActiveSafeZone] = useState(null);
@@ -55,6 +54,8 @@ export default function GamePage({
   const [threatLevel, setThreatLevel] = useState(0);
 
   const sedanGroupRef = useRef();
+  const impactShockRef = useRef(null);
+  const strobeOverlayRef = useRef(null);
   const playerPosRef = useRef(new THREE.Vector3(...initialSpawn.pos));
   const playerYawRef = useRef(initialSpawn.yaw);
   const batterySetterRef = useRef(null);
@@ -103,20 +104,25 @@ export default function GamePage({
   });
   batterySetterRef.current = setBatteryLevel;
 
+  // Strict one-shot "flashbang" pop via direct DOM ref (instant peak -> 0.18s smooth decay to 0, never loops!)
+  const triggerOneShotFlash = useCallback((peak = 0.85) => {
+    const el = strobeOverlayRef.current;
+    if (!el) return;
+    el.style.transition = 'none';
+    el.style.opacity = String(peak);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (!strobeOverlayRef.current) return;
+      strobeOverlayRef.current.style.transition = 'opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1)';
+      strobeOverlayRef.current.style.opacity = '0';
+    }));
+  }, []);
+
   // Non-lethal close-brush psychological scare (no game-over death screen during exploration!)
   const handleStalkerBrush = useCallback(() => {
     playWhisperScare();
     setThreatLevel(0);
-    interactions.setFlashStrobe(true);
-    setTimeout(() => interactions.setFlashStrobe(false), 260);
-    showSubtitle(
-      {
-        tag: 'INNER THOUGHT',
-        text: 'It brushed right past me in the dark—shine the flashlight or get to a lantern sanctuary!',
-      },
-      4800
-    );
-  }, [interactions, showSubtitle]);
+    showSubtitle({ tag: 'INNER THOUGHT', text: 'It brushed right past me in the dark—shine the flashlight or get to a lantern sanctuary!' }, 4800);
+  }, [showSubtitle]);
 
   useEffect(() => {
     if (paused) return undefined;
@@ -126,26 +132,25 @@ export default function GamePage({
 
   const gameplayActive = !paused && !inCutscene && !shockRecovery && !interactions.stallSeqActive && !anyModalOpen && !progress.chapterCompleted;
 
+  // Crisp 0.35s black shock cut via direct DOM ref (0 React re-renders on the exact impact frame!)
   const handleImpactShock = useCallback(() => {
-    setImpactShock(true);
-    setTimeout(() => setImpactShock(false), 400);
+    if (impactShockRef.current) impactShockRef.current.style.opacity = '1';
+    setTimeout(() => { if (impactShockRef.current) impactShockRef.current.style.opacity = '0'; }, 350);
   }, []);
 
+  // Smooth 0.3s fade-to-black & back when stepping out of the car into on-foot exploration (0ms freeze!)
   const finishCutscene = useCallback(() => {
+    if (impactShockRef.current) impactShockRef.current.style.opacity = '1';
     if (sedanGroupRef.current) sedanGroupRef.current.position.set(1.2, 0, 0);
     playerPosRef.current.set(-0.8, 1.7, -0.5);
     playerYawRef.current = -0.45;
     playCrashShockRinging();
-    setShockRecovery(true);
-    // Defer free-roam mode switch by 1 animation frame so React never hitches the crash cut
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       setInCutscene(false);
       setCutsceneState(POST_CRASH_STATE);
-    });
-    setTimeout(() => {
-      setShockRecovery(false);
+      requestAnimationFrame(() => { if (impactShockRef.current) impactShockRef.current.style.opacity = '0'; });
       showSubtitle(MONOLOGUE.afterCutscene, 5200);
-    }, 1550);
+    }, 150);
   }, [showSubtitle]);
 
   useCutsceneSkip(inCutscene && !paused, finishCutscene);
@@ -221,6 +226,7 @@ export default function GamePage({
           playerYawRef={playerYawRef}
           respawnCount={interactions.respawnCount}
           onCutsceneUpdate={setCutsceneState}
+          onOneShotFlash={triggerOneShotFlash}
           onImpactShock={handleImpactShock}
           onCutsceneComplete={finishCutscene}
           onToggleFlashlight={handleToggleFlashlight}
@@ -231,14 +237,15 @@ export default function GamePage({
           onThreatChange={setThreatLevel}
           onCatchPlayer={handleStalkerBrush}
           onDinersStare={interactions.setDinersStare}
-          onFlashStrobe={interactions.setFlashStrobe}
+          onFlashStrobe={triggerOneShotFlash}
           onRevealStallReality={interactions.handleRevealStallReality}
           onSubtitle={showSubtitle}
           onStallSeqComplete={interactions.handleStallSeqComplete}
         />
       </Canvas>
 
-      <div className="impact-shock-cut" style={{ opacity: impactShock ? 1 : 0 }} aria-hidden="true" />
+      <div ref={impactShockRef} className="impact-shock-cut" style={{ opacity: 0 }} aria-hidden="true" />
+      <div ref={strobeOverlayRef} className="hallucination-strobe-overlay" style={{ opacity: 0 }} aria-hidden="true" />
 
       {/* Crisp 0.5s Fade-From-Black Curtain Entering the Forest FM Radio Cutscene */}
       <div
@@ -260,7 +267,7 @@ export default function GamePage({
         anyModalOpen={anyModalOpen}
         elderTalking={interactions.elderTalking}
         shockRecovery={shockRecovery}
-        flashStrobe={interactions.flashStrobe}
+        flashStrobe={false}
         progress={progress}
         flashlightOn={flashlightOn}
         batteryLevel={batteryLevel}
