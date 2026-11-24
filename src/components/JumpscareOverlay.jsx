@@ -9,6 +9,7 @@
 // ============================================================================
 
 import React, { useMemo } from 'react';
+import { requestCanvasPointerLock } from '../data/pointerLookGuard';
 
 export default function JumpscareOverlay({
   phase,
@@ -39,14 +40,18 @@ export default function JumpscareOverlay({
         <div className="js-rgb-split cyan" />
         <div className="js-static" />
         <div className="js-scanlines" />
-        <div className="js-flash" />
         <div className="js-vignette" />
       </div>
     );
   }
 
+  const handleTryAgain = () => {
+    requestCanvasPointerLock();
+    onRespawn?.();
+  };
+
   return (
-    <div className="death-screen" role="alertdialog" aria-label="Consumed by the dark">
+    <div className="death-screen" role="alertdialog" aria-label="You were taken by the valley">
       <div className="death-ash-field" aria-hidden="true">
         {ash.map((a) => (
           <span
@@ -66,17 +71,17 @@ export default function JumpscareOverlay({
       <div className="death-vignette" aria-hidden="true" />
 
       <div className="death-content">
-        <div className="death-eyebrow">YOUR LIGHT HAS GONE OUT</div>
-        <h1 className="death-title">CONSUMED BY THE DARK</h1>
+        <div className="death-eyebrow">THE SHADOW CAUGHT YOU</div>
+        <h1 className="death-title">YOU WERE TAKEN BY THE VALLEY</h1>
         <div className="death-divider" />
         <p className="death-whisper">&ldquo;{whisper}&rdquo;</p>
         <div className="death-sanctuary">
-          Last sanctuary: <strong>{sanctuaryName}</strong>
+          Latest checkpoint: <strong>{sanctuaryName}</strong>
         </div>
 
         <div className="death-actions">
-          <button type="button" className="death-btn primary" onClick={onRespawn}>
-            Respawn at Last Sanctuary
+          <button type="button" className="death-btn primary" onClick={handleTryAgain}>
+            Try Again
           </button>
           <button type="button" className="death-btn" onClick={onReturnToMenu}>
             Return to Main Menu

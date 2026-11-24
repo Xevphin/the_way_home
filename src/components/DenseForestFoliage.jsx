@@ -66,18 +66,18 @@ export default function DenseForestFoliage({ compactMenu = false }) {
 
     const zStart = compactMenu ? 12 : 118;
     const zEnd = compactMenu ? -86 : -302;
-    const zStep = compactMenu ? 4.8 : 4.6;
+    const zStep = compactMenu ? 4.8 : 7.8;
 
-    // 3 Layered Forest Rings wrapping around road, clearings & Oakside dirt trails
+    // Deep-Woods Layered Forest Rings enveloping Route 312 & all Oakside trails out to x = ±112m
     for (let z = zStart; z >= zEnd; z -= zStep) {
       [-1, 1].forEach((side) => {
-        const rings = compactMenu ? [9.2, 16.5] : [8.6, 17.5, 29.0];
+        const rings = compactMenu ? [9.2, 16.5] : [10.0, 26.0, 45.0, 66.0, 88.0, 110.0];
         rings.forEach((baseDist, rIdx) => {
-          const x = side * (baseDist + rand() * 6.5);
-          const tz = z + (rand() - 0.5) * 3.6;
-          if (isInsideClearing(x, tz, 0.6)) return;
+          const x = side * (baseDist + rand() * 12.0);
+          const tz = z + (rand() - 0.5) * 6.2;
+          if (isInsideClearing(x, tz, 0.8)) return;
           const vIdx = Math.floor(rand() * FOREST_TREE_VARIANTS.length);
-          const h = (rIdx === 0 ? 7.2 : rIdx === 1 ? 9.4 : 11.4) + rand() * 2.8;
+          const h = (rIdx === 0 ? 7.6 : rIdx <= 2 ? 9.8 : 11.8) + rand() * 3.0;
           tList.push({
             url: FOREST_TREE_VARIANTS[vIdx],
             pos: [x, 0, tz],
@@ -86,10 +86,10 @@ export default function DenseForestFoliage({ compactMenu = false }) {
           });
         });
 
-        // Understory bushes & tall ferns lining road edge, trails & clearings
-        if (rand() > 0.35) {
-          const bx = side * (6.9 + rand() * 14.5);
-          const bz = z + (rand() - 0.5) * 3.8;
+        // Understory bushes & tall ferns lining road edge, deep trails & clearings
+        if (rand() > 0.25) {
+          const bx = side * (7.5 + rand() * 98.0);
+          const bz = z + (rand() - 0.5) * 6.4;
           if (!isInsideClearing(bx, bz, -0.35)) {
             const bIdx = Math.floor(rand() * FOREST_BUSH_VARIANTS.length);
             bList.push({
@@ -101,10 +101,10 @@ export default function DenseForestFoliage({ compactMenu = false }) {
           }
         }
 
-        // Mossy boulders, old stumps & fallen logs on forest floor
-        if (!compactMenu && rand() > 0.68) {
-          const fx = side * (7.4 + rand() * 15.5);
-          const fz = z + (rand() - 0.5) * 3.6;
+        // Mossy boulders, old stumps & fallen logs on deep forest floor
+        if (!compactMenu && rand() > 0.58) {
+          const fx = side * (8.5 + rand() * 96.0);
+          const fz = z + (rand() - 0.5) * 6.0;
           if (!isInsideClearing(fx, fz, -0.3)) {
             const fIdx = Math.floor(rand() * FOREST_FLOOR_VARIANTS.length);
             fList.push({

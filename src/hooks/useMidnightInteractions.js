@@ -43,13 +43,10 @@ export default function useMidnightInteractions({
 
   const scares = useMidnightScares({ showSubtitle });
 
-  useEffect(
-    () => () => {
-      elderTimersRef.current.forEach((t) => clearTimeout(t));
-      clearTimeout(toastTimerRef.current);
-    },
-    []
-  );
+  useEffect(() => () => {
+    elderTimersRef.current.forEach((t) => clearTimeout(t));
+    clearTimeout(toastTimerRef.current);
+  }, []);
 
   const flashPickup = useCallback((label) => {
     setPickupToast({ id: Date.now(), label });
@@ -59,16 +56,9 @@ export default function useMidnightInteractions({
 
   const startSurauElderDialogue = useCallback(() => {
     if (elderTalking) return;
-    // One-time dialogue lock: never re-trigger full loop once Uncle has spoken!
     if (progress.elderSpoken) {
       playSanctuaryChime(false);
-      showSubtitle(
-        {
-          tag: 'UNCLE',
-          text: 'Stay in the light, son. Find those three car parts and head straight home.',
-        },
-        3600
-      );
+      showSubtitle({ tag: 'UNCLE', text: 'Stay in the light, son. Find those three car parts and head straight home.' }, 3600);
       return;
     }
 
@@ -80,24 +70,19 @@ export default function useMidnightInteractions({
     let accMs = 150;
     SURAU_ELDER_DIALOGUE.forEach((beat) => {
       const dur = getSubtitleDurationMs(beat.text, beat.speaker);
-      elderTimersRef.current.push(
-        setTimeout(() => showSubtitle({ tag: beat.speaker, text: beat.text }, dur), accMs)
-      );
+      elderTimersRef.current.push(setTimeout(() => showSubtitle({ tag: beat.speaker, text: beat.text }, dur), accMs));
       accMs += dur;
     });
 
-    elderTimersRef.current.push(
-      setTimeout(() => {
-        setElderTalking(false);
-        setProgress((prev) => ({ ...prev, elderSpoken: true }));
-      }, accMs + 200)
-    );
+    elderTimersRef.current.push(setTimeout(() => {
+      setElderTalking(false);
+      setProgress((prev) => ({ ...prev, elderSpoken: true }));
+    }, accMs + 200));
   }, [elderTalking, progress.elderSpoken, showSubtitle, setProgress]);
 
   const handleCloseDoc = useCallback(() => {
     const closingId = activeDocId;
     setActiveDocId(null);
-
     if (closingId === 'forestry_memo') {
       setProgress((prev) => {
         if (prev.officeScareDone) return prev;
@@ -113,14 +98,11 @@ export default function useMidnightInteractions({
     setPadlockOpen(false);
     playSanctuaryChime(true);
     flashPickup('Starter Relay');
-    setProgress((prev) => ({ ...prev, chestUnlocked: true, hasStarterRelay: true }));
-    showSubtitle(
-      {
-        tag: 'STARTER RELAY',
-        text: 'Got the Starter Relay from the supply chest! Once I have all 3 parts, I can fix the car.',
-      },
-      5800
-    );
+    setProgress((prev) => ({
+      ...prev, chestUnlocked: true, hasStarterRelay: true,
+      lastSafeZoneName: 'Wayfarer Lantern Wakaf', lastRespawnPoint: [71.2, 1.7, -193.0], lastRespawnYaw: -Math.PI / 2,
+    }));
+    showSubtitle({ tag: 'STARTER RELAY', text: 'Got the Starter Relay from the supply chest! Once I have all 3 parts, I can fix the car.' }, 5800);
   }, [setProgress, showSubtitle, flashPickup]);
 
   const handleToggleTornMap = useCallback(() => {
@@ -264,10 +246,21 @@ export default function useMidnightInteractions({
     setRespawnCount((c) => c + 1);
   }, []);
 
+  const handleRespawn = useCallback(() => {
+    scares.clearDeathPhase();
+    setBatteryLevel?.((b) => Math.max(65, b));
+    setRespawnCount((c) => c + 1);
+  }, [scares, setBatteryLevel]);
+
   return {
     flashlightFlicker: scares.flashlightFlicker,
     windowScareActive: scares.windowScareActive,
     watchtowerScareActive: scares.watchtowerScareActive,
+    deathPhase: scares.deathPhase,
+    deathWhisper: scares.deathWhisper,
+    catchPosRef: scares.catchPosRef,
+    triggerLurkerCatch: scares.triggerLurkerCatch,
+    handleRespawn,
     activeDocId,
     padlockOpen,
     setPadlockOpen,

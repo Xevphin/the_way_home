@@ -71,9 +71,9 @@ export default function RuralRoadWorld({
         color="#9bb8e6"
       />
 
-      {/* Forest Earth Terrain (Lightweight Lambert material for smooth 60 FPS) */}
+      {/* Forest Earth Terrain (Widened to 280m to cover deep-woods trails out to x = ±110m) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, -98]}>
-        <planeGeometry args={[180, 470]} />
+        <planeGeometry args={[280, 470]} />
         <meshLambertMaterial color="#0b130d" />
       </mesh>
 

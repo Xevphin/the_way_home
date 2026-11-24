@@ -22,7 +22,9 @@ export function createRoute312Curve() {
     new THREE.Vector3(-16.5, 0, -63.0),
     new THREE.Vector3(-29.5, 0, -79.0),
     new THREE.Vector3(-46.5, 0, -102.0),
-    new THREE.Vector3(-64.5, 0, -130.0),
+    new THREE.Vector3(-66.5, 0, -132.0),
+    new THREE.Vector3(-88.0, 0, -166.0),
+    new THREE.Vector3(-110.0, 0, -204.0),
   ]);
 }
 
@@ -59,7 +61,9 @@ function buildRibbonGeometry(pointsLeft, pointsRight, y) {
 
 const BRANCH_TREES = [
   [-15.5, -47], [-20.5, -54], [-26.5, -62], [-34.5, -72], [-43.0, -84], [-53.0, -98],
+  [-64.0, -114], [-76.0, -134], [-88.5, -154], [-102.0, -176], [-115.0, -198],
   [-8.5, -59], [-13.5, -67], [-20.5, -77], [-28.5, -89], [-38.0, -102], [-48.0, -116],
+  [-58.5, -132], [-70.0, -152], [-82.0, -172], [-94.5, -194],
 ];
 
 export default function Route312BranchRoad({
@@ -69,7 +73,7 @@ export default function Route312BranchRoad({
 }) {
   const { asphaltGeom, leftLineGeom, rightLineGeom, centerDashes } = useMemo(() => {
     const curve = createRoute312Curve();
-    const steps = 48;
+    const steps = 84;
     const aspL = [];
     const aspR = [];
     const shLInner = [];
@@ -85,41 +89,41 @@ export default function Route312BranchRoad({
       // Right-hand perpendicular in XZ plane (pointing right of travel direction)
       const right = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
 
-      // At the merge throat (u < 0.14), flare left edge flush with main E18 (-6.2)
-      // and tuck right edge cleanly inside the E18 asphalt so there is zero seam
-      const mergeT = Math.min(1, u / 0.14);
+      // At the merge throat (u < 0.08), flare left edge flush with main E18 (-6.2)
+      const mergeT = Math.min(1, u / 0.08);
       const leftHalf = THREE.MathUtils.lerp(4.4, 3.6, mergeT);
       const rightHalf = THREE.MathUtils.lerp(0.6, 3.6, mergeT);
 
       aspL.push(pt.clone().addScaledVector(right, -leftHalf));
       aspR.push(pt.clone().addScaledVector(right, rightHalf));
 
-      // Continuous outer (left) white shoulder line starting flush at x = -5.6
+      // Continuous outer (left) white shoulder line from start to end of extended curve
       const shOffset = THREE.MathUtils.lerp(3.8, 3.2, mergeT);
-      shLOuter.push(pt.clone().addScaledVector(right, -(shOffset + 0.09)));
-      shLInner.push(pt.clone().addScaledVector(right, -(shOffset - 0.09)));
+      shLOuter.push(pt.clone().addScaledVector(right, -(shOffset + 0.1)));
+      shLInner.push(pt.clone().addScaledVector(right, -(shOffset - 0.1)));
 
-      // Inner (right) white shoulder line starts cleanly once outside main E18 edge (-5.6)
+      // Inner (right) white shoulder line starts immediately once clear of main E18 edge (-5.65)
       const rEdge = pt.clone().addScaledVector(right, 3.2);
-      if (u >= 0.21 && rEdge.x <= -5.55) {
-        shRInner.push(pt.clone().addScaledVector(right, 3.2 - 0.09));
-        shROuter.push(pt.clone().addScaledVector(right, 3.2 + 0.09));
+      if (rEdge.x <= -5.65) {
+        shRInner.push(pt.clone().addScaledVector(right, 3.2 - 0.1));
+        shROuter.push(pt.clone().addScaledVector(right, 3.2 + 0.1));
       }
 
-      if (i >= 8 && i < steps && i % 3 === 0) {
+      // Evenly spaced yellow dashed centerline along the ENTIRE extended Route 312 curve
+      if (i >= 5 && i < steps && i % 2 === 0) {
         const next = curve.getPointAt((i + 1) / steps);
         const mid = pt.clone().add(next).multiplyScalar(0.5);
-        const len = pt.distanceTo(next) * 0.82;
+        const len = pt.distanceTo(next) * 0.92;
         const angle = Math.atan2(next.x - pt.x, next.z - pt.z);
-        dashes.push({ id: i, pos: [mid.x, 0.028, mid.z], len, angle });
+        dashes.push({ id: i, pos: [mid.x, 0.036, mid.z], len, angle });
       }
     }
 
     return {
       asphaltGeom: buildRibbonGeometry(aspL, aspR, 0.02),
-      leftLineGeom: buildRibbonGeometry(shLOuter, shLInner, 0.027),
+      leftLineGeom: buildRibbonGeometry(shLOuter, shLInner, 0.036),
       rightLineGeom:
-        shRInner.length >= 2 ? buildRibbonGeometry(shRInner, shROuter, 0.027) : null,
+        shRInner.length >= 2 ? buildRibbonGeometry(shRInner, shROuter, 0.036) : null,
       centerDashes: dashes,
     };
   }, []);
@@ -143,15 +147,15 @@ export default function Route312BranchRoad({
         </mesh>
       )}
 
-      {/* Dashed Yellow Centerline Along Route 312 */}
+      {/* Dashed Yellow Centerline Along Full Extended Route 312 Curve */}
       {centerDashes.map((d) => (
         <mesh
           key={d.id}
           position={d.pos}
           rotation={[-Math.PI / 2, 0, d.angle]}
         >
-          <planeGeometry args={[0.15, d.len]} />
-          <meshBasicMaterial color="#c4a042" />
+          <planeGeometry args={[0.17, d.len]} />
+          <meshBasicMaterial color="#e8be4a" />
         </mesh>
       ))}
 

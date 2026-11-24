@@ -18,6 +18,7 @@ import {
   setAmbienceSilence,
 } from './ForestAmbienceAudio';
 import { getSubtitleDurationMs } from '../data/dialogueTiming';
+import { LANDMARK_TRANSFORMS } from '../data/midnightLandmarksData';
 
 const BEAT_LINES = {
   b1: { tag: 'YOU', text: 'Excuse me—my car just broke down back on the road. Do you have signal or a phone I can use?' },
@@ -105,10 +106,11 @@ export default function PhantomStallSequence({
       onSubtitle(BEAT_LINES.b4, getSubtitleDurationMs(BEAT_LINES.b4.text, BEAT_LINES.b4.tag));
     }
 
-    // Camera choreography aligned to the rotated West Forest Clearing ([-14.6, 0, -222.0])
-    const seatPos = new THREE.Vector3(-11.35, 1.38, -221.95);
-    const stumblePos = new THREE.Vector3(-8.4, 1.66, -222.4);
-    const lookDiners = new THREE.Vector3(-13.4, 1.36, -221.9);
+    // Camera choreography aligned dynamically to LANDMARK_TRANSFORMS.phantomStall
+    const { x: sx, z: sz } = LANDMARK_TRANSFORMS.phantomStall;
+    const seatPos = new THREE.Vector3(sx + 3.25, 1.38, sz + 0.05);
+    const stumblePos = new THREE.Vector3(sx + 6.2, 1.66, sz - 0.4);
+    const lookDiners = new THREE.Vector3(sx + 1.2, 1.36, sz + 0.1);
 
     if (t < 2.2) {
       const p = Math.min(1, t / 2.2);
@@ -131,7 +133,7 @@ export default function PhantomStallSequence({
       camera.position.lerpVectors(seatPos, stumblePos, ease);
       camera.position.x += (Math.random() - 0.5) * tremor;
       camera.position.y += (Math.random() - 0.5) * tremor;
-      camera.lookAt(-14.4, 1.35, -222.0);
+      camera.lookAt(sx + 0.2, 1.35, sz);
     }
 
     if (t >= SEQUENCE_DURATION && !f.done) {

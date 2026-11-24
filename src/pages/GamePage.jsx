@@ -117,12 +117,12 @@ export default function GamePage({
     }));
   }, []);
 
-  // Non-lethal close-brush psychological scare (no game-over death screen during exploration!)
-  const handleStalkerBrush = useCallback(() => {
-    playWhisperScare();
+  // Full 1.1s 3D jumpscare lunge -> Death / Try Again screen when Shadow Lurker catches you
+  const handleStalkerCatch = useCallback((catchPos) => {
     setThreatLevel(0);
-    showSubtitle({ tag: 'INNER THOUGHT', text: 'It brushed right past me in the dark—shine the flashlight or get to a lantern sanctuary!' }, 4800);
-  }, [showSubtitle]);
+    setHoverInteractable(null);
+    interactions.triggerLurkerCatch(catchPos);
+  }, [interactions]);
 
   useEffect(() => {
     if (paused) return undefined;
@@ -130,7 +130,7 @@ export default function GamePage({
     return () => stopForestNightAmbience();
   }, [paused]);
 
-  const gameplayActive = !paused && !inCutscene && !shockRecovery && !interactions.stallSeqActive && !anyModalOpen && !progress.chapterCompleted;
+  const gameplayActive = !paused && !inCutscene && !shockRecovery && !interactions.stallSeqActive && !anyModalOpen && !interactions.deathPhase && !progress.chapterCompleted;
 
   // Crisp 0.35s black shock cut via direct DOM ref (0 React re-renders on the exact impact frame!)
   const handleImpactShock = useCallback(() => {
@@ -210,8 +210,8 @@ export default function GamePage({
           cutsceneState={cutsceneState}
           sedanGroupRef={sedanGroupRef}
           gameplayActive={gameplayActive}
-          jumpscareActive={false}
-          catchPosRef={null}
+          jumpscareActive={interactions.deathPhase === 'JUMPSCARE'}
+          catchPosRef={interactions.catchPosRef}
           activeSafeZone={activeSafeZone}
           windowScareActive={interactions.windowScareActive}
           watchtowerScareActive={interactions.watchtowerScareActive}
@@ -235,7 +235,7 @@ export default function GamePage({
           onInteract={interactions.handleInteract}
           onEnterSafeZone={handleEnterSafeZone}
           onThreatChange={setThreatLevel}
-          onCatchPlayer={handleStalkerBrush}
+          onCatchPlayer={handleStalkerCatch}
           onDinersStare={interactions.setDinersStare}
           onFlashStrobe={triggerOneShotFlash}
           onRevealStallReality={interactions.handleRevealStallReality}
@@ -280,15 +280,15 @@ export default function GamePage({
         activeDocId={interactions.activeDocId}
         padlockOpen={interactions.padlockOpen}
         tornMapOpen={interactions.tornMapOpen}
-        deathPhase={null}
-        deathWhisper=""
+        deathPhase={interactions.deathPhase}
+        deathWhisper={interactions.deathWhisper}
         onToggleTornMap={interactions.handleToggleTornMap}
         onCloseDoc={interactions.handleCloseDoc}
         onUnlockChest={interactions.handleUnlockChest}
         onClosePadlock={() => interactions.setPadlockOpen(false)}
         onCloseTornMap={() => interactions.setTornMapOpen(false)}
         onSkipCutscene={finishCutscene}
-        onRespawn={() => {}}
+        onRespawn={interactions.handleRespawn}
         onMenu={handleMenu}
       />
     </div>

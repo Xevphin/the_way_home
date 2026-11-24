@@ -71,7 +71,7 @@ export default function NightTrafficDetour({
     }
 
     const dashes = [];
-    for (let z = 36; z >= -130; z -= 7) dashes.push(z);
+    for (let z = 58; z >= -150; z -= 7) dashes.push(z);
     return { detourCurve: curve, jammedCars: jam, laneDashes: dashes };
   }, []);
 
@@ -123,9 +123,11 @@ export default function NightTrafficDetour({
       const p = (t - tSlow) / Math.max(1, tTurn - tSlow);
       carZ = THREE.MathUtils.lerp(-22, -35.0, p);
     } else {
-      const u = Math.min(0.46, ((t - tTurn) / Math.max(1, total - tTurn)) * 0.46);
+      const rawP = Math.min(1, (t - tTurn) / Math.max(1, total - tTurn));
+      // Accelerate smoothly all the way down the extended Route 312 dark forest tunnel (u -> 1.0)
+      const u = Math.min(0.985, Math.pow(rawP, 1.35));
       const pos = detourCurve.getPointAt(u);
-      const next = detourCurve.getPointAt(Math.min(1, u + 0.02));
+      const next = detourCurve.getPointAt(Math.min(1, u + 0.015));
       carX = pos.x;
       carZ = pos.z;
       heading = Math.atan2(-(next.x - pos.x), -(next.z - pos.z));
@@ -174,23 +176,23 @@ export default function NightTrafficDetour({
         <meshStandardMaterial color="#101812" roughness={0.96} />
       </mesh>
 
-      {/* Dark Asphalt E18 Highway (x in [-6.4, +12.4]) */}
+      {/* Dark Asphalt E18 Highway (x in [-6.4, +12.4], y = 0.01) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[3.0, 0.01, -45]} receiveShadow>
-        <planeGeometry args={[18.8, 220]} />
+        <planeGeometry args={[18.8, 240]} />
         <meshStandardMaterial color="#1a1f27" roughness={0.76} metalness={0.16} />
       </mesh>
-      {/* White Highway Edge Lines (Split Left Edge Cleanly Into Seamless Route 312 Off-Ramp) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.6, 0.025, 16.5]}>
-        <planeGeometry args={[0.18, 103]} />
+      {/* White Highway Edge Lines at y = 0.025 (zero Z-fighting, split cleanly into Route 312 off-ramp) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.6, 0.025, 19.5]}>
+        <planeGeometry args={[0.18, 109]} />
         <meshBasicMaterial color="#d8e0eb" />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.6, 0.025, -104]}>
-        <planeGeometry args={[0.18, 95]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-5.6, 0.025, -109]}>
+        <planeGeometry args={[0.18, 106]} />
         <meshBasicMaterial color="#d8e0eb" />
       </mesh>
       {[3.55, 4.65, 11.8].map((sx, i) => (
         <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[sx, 0.025, -45]}>
-          <planeGeometry args={[0.18, 215]} />
+          <planeGeometry args={[0.18, 236]} />
           <meshBasicMaterial color="#d8e0eb" />
         </mesh>
       ))}

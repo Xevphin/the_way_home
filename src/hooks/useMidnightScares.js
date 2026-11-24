@@ -7,12 +7,23 @@
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+import { playJumpscareScreech } from '../components/AudioEngine';
 import { playDoorSlamScare, playWhisperScare } from '../components/ForestAmbienceAudio';
+
+const DEATH_WHISPERS = [
+  'Never stray from the lantern light after midnight...',
+  'Shine your beam directly into its eyes before it reaches you...',
+  'The valley keeps those who linger in the dark...',
+];
 
 export default function useMidnightScares({ showSubtitle }) {
   const [flashlightFlicker, setFlashlightFlicker] = useState(false);
   const [windowScareActive, setWindowScareActive] = useState(false);
   const [watchtowerScareActive, setWatchtowerScareActive] = useState(false);
+  const [deathPhase, setDeathPhase] = useState(null); // null | 'JUMPSCARE' | 'DEATH'
+  const [deathWhisper, setDeathWhisper] = useState(DEATH_WHISPERS[0]);
+  const catchPosRef = useRef(new THREE.Vector3(-11.5, 0, -28.0));
   const timersRef = useRef([]);
 
   useEffect(() => () => timersRef.current.forEach((t) => clearTimeout(t)), []);
@@ -75,13 +86,40 @@ export default function useMidnightScares({ showSubtitle }) {
     [triggerFlicker, showSubtitle]
   );
 
+  // Full 1.1s violent 3D jumpscare lunge -> transitions to Death / Try Again screen
+  const triggerLurkerCatch = useCallback(
+    (catchPos) => {
+      if (deathPhase) return;
+      if (catchPos) catchPosRef.current.copy(catchPos);
+      playJumpscareScreech();
+      setDeathWhisper(DEATH_WHISPERS[Math.floor(Math.random() * DEATH_WHISPERS.length)]);
+      setDeathPhase('JUMPSCARE');
+      schedule(() => {
+        if (document.pointerLockElement && document.exitPointerLock) {
+          document.exitPointerLock();
+        }
+        setDeathPhase('DEATH');
+      }, 1100);
+    },
+    [deathPhase, schedule]
+  );
+
+  const clearDeathPhase = useCallback(() => {
+    setDeathPhase(null);
+  }, []);
+
   return {
     flashlightFlicker,
     windowScareActive,
     watchtowerScareActive,
+    deathPhase,
+    deathWhisper,
+    catchPosRef,
     triggerFlicker,
     triggerOfficeWindowScare,
     triggerWatchtowerDart,
     triggerBehindWhisper,
+    triggerLurkerCatch,
+    clearDeathPhase,
   };
 }

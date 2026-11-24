@@ -11,26 +11,26 @@ import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// 16 key trail junctions & road turnoffs across East (Sites 1..5) & West (Sites 6..9)
+// 16 key trail junctions & road turnoffs across deep East (+44..+86) & West (-48..-96) loops
 const TRAIL_POST_FORKS = [
-  // East Side Trail Forks
-  { pos: [6.2, -40.5], rotY: -0.35, tilt: 0.04 },
-  { pos: [15.2, -49.2], rotY: 0.42, tilt: -0.05 },
-  { pos: [13.8, -85.5], rotY: -0.28, tilt: 0.03 },
-  { pos: [6.4, -121.5], rotY: -0.4, tilt: -0.04 },
-  { pos: [18.6, -126.5], rotY: 0.55, tilt: 0.05 },
-  { pos: [14.6, -142.2], rotY: -0.48, tilt: -0.03 },
-  { pos: [6.2, -181.2], rotY: -0.32, tilt: 0.04 },
-  { pos: [16.8, -184.5], rotY: 0.38, tilt: -0.05 },
-  // West Side Trail Forks
-  { pos: [-6.2, -61.5], rotY: 0.36, tilt: -0.04 },
-  { pos: [-16.8, -68.5], rotY: -0.44, tilt: 0.05 },
-  { pos: [-6.4, -93.8], rotY: 0.3, tilt: -0.03 },
-  { pos: [-18.8, -96.5], rotY: -0.52, tilt: 0.04 },
-  { pos: [-15.6, -125.8], rotY: 0.25, tilt: -0.05 },
-  { pos: [-6.4, -153.5], rotY: 0.38, tilt: 0.03 },
-  { pos: [-20.8, -161.2], rotY: -0.46, tilt: -0.04 },
-  { pos: [-6.4, -219.5], rotY: 0.34, tilt: 0.04 },
+  // East Side Road Turnoffs & Deep Trail Forks
+  { pos: [6.4, -41.0], rotY: -0.35, tilt: 0.04 },
+  { pos: [26.0, -45.5], rotY: 0.25, tilt: -0.04 },
+  { pos: [50.0, -56.0], rotY: 0.42, tilt: -0.05 },
+  { pos: [74.0, -72.0], rotY: -0.28, tilt: 0.03 },
+  { pos: [6.4, -136.0], rotY: -0.4, tilt: -0.04 },
+  { pos: [82.0, -124.0], rotY: 0.55, tilt: 0.05 },
+  { pos: [58.0, -152.0], rotY: -0.48, tilt: -0.03 },
+  { pos: [6.4, -182.0], rotY: -0.32, tilt: 0.04 },
+  // West Side Road Turnoffs & Deep Trail Forks
+  { pos: [-6.4, -62.0], rotY: 0.36, tilt: -0.04 },
+  { pos: [-28.0, -65.5], rotY: -0.22, tilt: 0.04 },
+  { pos: [-54.0, -74.0], rotY: -0.44, tilt: 0.05 },
+  { pos: [-6.4, -94.0], rotY: 0.3, tilt: -0.03 },
+  { pos: [-72.0, -110.0], rotY: -0.52, tilt: 0.04 },
+  { pos: [-6.4, -154.0], rotY: 0.38, tilt: 0.03 },
+  { pos: [-88.0, -166.0], rotY: -0.46, tilt: -0.04 },
+  { pos: [-6.4, -220.0], rotY: 0.34, tilt: 0.04 },
 ];
 
 export default function ForestTrailMarkers() {

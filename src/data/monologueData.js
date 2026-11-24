@@ -53,8 +53,8 @@ export const INITIAL_CUTSCENE_STATE = {
   headlightPower: 1.0,
   hazardsOn: false,
   showFlashFigure: false,
-  captionTag: MONOLOGUE.cutsceneBeat1.tag,
-  caption: MONOLOGUE.cutsceneBeat1.text,
+  captionTag: '',
+  caption: '',
 };
 
 export const POST_CRASH_STATE = {

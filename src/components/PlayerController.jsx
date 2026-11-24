@@ -161,7 +161,7 @@ export default function PlayerController({
     if (isMoving) {
       moveDir.normalize();
       const speed = isSprinting ? 7.8 : 4.8;
-      const nx = THREE.MathUtils.clamp(camera.position.x + moveDir.x * speed * dt, -34.0, 34.0);
+      const nx = THREE.MathUtils.clamp(camera.position.x + moveDir.x * speed * dt, -122.0, 122.0);
       const nz = THREE.MathUtils.clamp(camera.position.z + moveDir.z * speed * dt, -290.0, 14.0);
       const colState = { shedUnlocked: progress.shedUnlocked };
       if (!hitsMidnightCollider(nx, camera.position.z, colState)) camera.position.x = nx;

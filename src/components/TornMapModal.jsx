@@ -32,65 +32,54 @@ export default function TornMapModal({ open, progress, onClose }) {
 
         <h2 className="memo-doc-title">Lembah Batu Looping Forest Trails (Hand-Drawn)</h2>
 
-        {/* Authentic Oakside-Park-Style Hand-Drawn Looping Trail Diagram */}
+        {/* Clean Hand-Drawn Torn Surveyor Map Diagram Only (Zero Spoiler Legend List!) */}
         <svg
-          viewBox="0 0 360 155"
+          viewBox="0 0 360 175"
           style={{
             width: '100%',
-            height: '132px',
+            height: '215px',
             background: '#121519',
             borderRadius: '6px',
             border: '1px solid #3f382b',
-            marginBottom: '0.65rem',
+            marginBottom: '0.85rem',
           }}
           aria-label="Hand-drawn branching forest loop diagram"
         >
           {/* Main Route 312 Wet Asphalt Spine (Vertical Center) */}
-          <line x1="180" y1="10" x2="180" y2="148" stroke="#64748b" strokeWidth="4" strokeDasharray="5,4" />
-          {/* West Oakside Trail Loops (Sites 6, 7, 8, 9) */}
+          <line x1="180" y1="10" x2="180" y2="165" stroke="#64748b" strokeWidth="4" strokeDasharray="5,4" />
+          {/* West Oakside Trail Loops */}
           <path
-            d="M180,115 C140,115 110,122 108,104 C105,86 142,84 180,88 M108,104 C74,102 64,74 96,68 C124,62 152,72 180,74 M96,68 L54,68 M96,68 C62,54 58,28 96,24 C132,20 156,30 180,26"
+            d="M180,126 C138,126 106,132 104,114 C101,94 140,92 180,96 M104,114 C70,112 60,82 94,74 C124,68 152,78 180,80 M94,74 L48,74 M94,74 C58,58 54,30 94,24 C132,20 156,30 180,26"
             fill="none"
             stroke="#d6cbb5"
-            strokeWidth="2.2"
+            strokeWidth="2.3"
           />
-          {/* East Oakside Trail Loops (Sites 1, 2, 3, 4, 5) */}
+          {/* East Oakside Trail Loops */}
           <path
-            d="M180,124 C216,124 238,118 242,102 C246,84 292,88 286,66 C280,46 232,54 180,58 M242,102 C214,92 214,68 238,58 M262,56 C298,46 296,18 254,18 C222,18 206,32 180,34 M254,18 L254,36"
+            d="M180,136 C218,136 240,128 244,112 C248,92 296,96 290,72 C284,50 234,58 180,62 M244,112 C214,100 214,74 240,62 M264,60 C302,48 300,18 256,18 C222,18 206,34 180,36 M256,18 L256,38"
             fill="none"
             stroke="#d6cbb5"
-            strokeWidth="2.2"
+            strokeWidth="2.3"
           />
-          {/* Boxed Site Markers Matching Oakside Park Concept */}
+          {/* Boxed Site Markers Matching Oakside Hand-Drawn Map */}
           {[
-            { x: 224, y: 112, label: 'SURAU' },
-            { x: 256, y: 74, label: 'RUIN #2' },
-            { x: 214, y: 48, label: 'SHED' },
-            { x: 244, y: 8, label: 'WAKAF' },
-            { x: 92, y: 102, label: 'HOUSE #1' },
-            { x: 88, y: 60, label: 'OFFICE' },
-            { x: 58, y: 34, label: 'TOWER' },
-            { x: 102, y: 12, label: 'STALL' },
+            { x: 226, y: 122, label: 'SURAU' },
+            { x: 266, y: 80, label: 'RUIN #1' },
+            { x: 218, y: 52, label: 'SHED' },
+            { x: 248, y: 12, label: 'WAKAF' },
+            { x: 90, y: 112, label: 'HOUSE #1' },
+            { x: 86, y: 66, label: 'OFFICE' },
+            { x: 52, y: 38, label: 'TOWER' },
+            { x: 100, y: 14, label: 'STALL' },
           ].map((s) => (
             <g key={s.label} transform={`translate(${s.x},${s.y})`}>
-              <rect x="-24" y="-7" width="48" height="14" fill="#121519" stroke="#e2d8c3" strokeWidth="1.3" />
-              <text x="0" y="3" textAnchor="middle" fill="#f1e9d2" fontSize="7.2" fontFamily="monospace" fontWeight="bold">
+              <rect x="-25" y="-7.5" width="50" height="15" fill="#121519" stroke="#e2d8c3" strokeWidth="1.3" />
+              <text x="0" y="3" textAnchor="middle" fill="#f1e9d2" fontSize="7.5" fontFamily="monospace" fontWeight="bold">
                 {s.label}
               </text>
             </g>
           ))}
         </svg>
-
-        <div className="torn-sketch-grid">
-          <div className="sketch-row warn"><span>← NORTHWEST LOOP</span><strong>&ldquo;Do NOT stop at the lit warung&rdquo;</strong></div>
-          <div className="sketch-row"><span>→ NORTHEAST LOOP</span><strong>Mossy Wakaf + Riddle Chest (6414) {progress?.hasStarterRelay ? '✓' : ''}</strong></div>
-          <div className="sketch-row"><span>← WEST WATCHTOWER</span><strong>Ranger Watchtower (Posters &amp; Lore) {progress?.posterRead ? '✓' : ''}</strong></div>
-          <div className="sketch-row"><span>→ EAST SHED LOOP</span><strong>Rubber Shed (Needs Iron Key → Battery) {progress?.hasBatteryCell ? '✓' : ''}</strong></div>
-          <div className="sketch-row"><span>→ OUTER EAST RUIN</span><strong>Stilt House #2 (Heavy Crowbar) {progress?.hasCrowbar ? '✓' : ''}</strong></div>
-          <div className="sketch-row"><span>← WEST OFFICE LOOP</span><strong>Forestry Office (Memo #04 + Iron Key) {progress?.hasIronKey ? '✓' : ''}</strong></div>
-          <div className="sketch-row"><span>← WEST STILT LOOP</span><strong>Stilt House #1 (Pry Crate → Belt) {progress?.hasBelt ? '✓' : ''}</strong></div>
-          <div className="sketch-row safe"><span>→ EAST SANCTUARY</span><strong>Kampung Surau (Sacred Light)</strong></div>
-        </div>
 
         <div className="memo-footer-row">
           <span className="memo-hint">Press [M] or [ESC] to fold sketch</span>

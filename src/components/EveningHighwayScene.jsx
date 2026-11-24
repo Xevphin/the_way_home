@@ -67,19 +67,21 @@ export default function EveningHighwayScene({
 
   const aiTraffic = useMemo(
     () => [
-      { id: 0, laneX: 1.8, startZ: 18, speed: 12.5, dir: -1 },
-      { id: 1, laneX: 1.8, startZ: -25, speed: 11.8, dir: -1 },
-      { id: 2, laneX: -1.8, startZ: -38, speed: 13.0, dir: -1 },
-      { id: 3, laneX: 6.4, startZ: -85, speed: 14.5, dir: 1 },
-      { id: 4, laneX: 9.8, startZ: -45, speed: 13.5, dir: 1 },
-      { id: 5, laneX: 6.4, startZ: -15, speed: 15.0, dir: 1 },
+      // Same-direction adjacent lane (laneX = 2.1, >= 38m spacing, matched cruise speed)
+      { id: 0, laneX: 2.1, startZ: 28, speed: 11.4, dir: -1 },
+      { id: 1, laneX: 2.1, startZ: -14, speed: 11.0, dir: -1 },
+      { id: 2, laneX: 2.1, startZ: -56, speed: 11.8, dir: -1 },
+      // Faster opposite-direction traffic across the concrete median (laneX = 6.8 & 10.2)
+      { id: 3, laneX: 6.8, startZ: -120, speed: 15.2, dir: 1 },
+      { id: 4, laneX: 10.2, startZ: -65, speed: 14.4, dir: 1 },
+      { id: 5, laneX: 6.8, startZ: -15, speed: 16.0, dir: 1 },
     ],
     []
   );
 
   const laneDashes = useMemo(() => {
     const arr = [];
-    for (let z = 48; z >= -130; z -= 7) arr.push(z);
+    for (let z = 64; z >= -168; z -= 7) arr.push(z);
     return arr;
   }, []);
 
@@ -112,20 +114,24 @@ export default function EveningHighwayScene({
     const total = HIGHWAY_TIMELINE.totalSec;
     const tSign = HIGHWAY_TIMELINE.lines[1].time;
     const tPass = HIGHWAY_TIMELINE.lines[2].time + 2.5;
-    let carZ;
-    if (t < tSign) carZ = THREE.MathUtils.lerp(28, -14, t / tSign);
-    else if (t < tPass) carZ = THREE.MathUtils.lerp(-14, -27.5, (t - tSign) / (tPass - tSign));
-    else carZ = THREE.MathUtils.lerp(-27.5, -72, (t - tPass) / Math.max(1, total - tPass));
+    // Realistic highway cruising speed across existing duration (z = 55 -> -145)
+    const carZ = THREE.MathUtils.lerp(55, -145, Math.min(1, t / total));
 
     const carX = -1.8;
     playerCarRef.current.position.set(carX, 0, carZ);
 
     if (trafficGroupRef.current) {
+      const span = 220;
       trafficGroupRef.current.children.forEach((mesh, idx) => {
         const cfg = aiTraffic[idx];
         let z = cfg.startZ + cfg.dir * cfg.speed * t;
-        if (cfg.dir < 0 && z < -115) z += 145;
-        if (cfg.dir > 0 && z > 35) z -= 145;
+        if (cfg.dir < 0) {
+          while (z < -165) z += span;
+          // Hard longitudinal spacing guard (>= 26m from carZ) so zero phasing ever occurs
+          if (Math.abs(z - carZ) < 26) z = z < carZ ? carZ - 28 : carZ + 28;
+        } else {
+          while (z > 65) z -= span;
+        }
         mesh.position.set(cfg.laneX, 0, z);
       });
     }

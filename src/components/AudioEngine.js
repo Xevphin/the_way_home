@@ -9,6 +9,7 @@
 let audioCtx = null;
 let masterGain = null;
 let masterVolumeValue = 0.75;
+let cachedScreechBuf = null;
 
 function ensureContext() {
   if (typeof window === 'undefined') return null;
@@ -275,13 +276,15 @@ export function playJumpscareScreech() {
     lfo.stop(now + 1.4);
   });
 
-  // Harsh static noise burst
-  const len = ctx.sampleRate * 1.2;
-  const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  // Harsh static noise burst (cached buffer for 0ms allocation on catch frame)
+  if (!cachedScreechBuf || cachedScreechBuf.sampleRate !== ctx.sampleRate) {
+    const len = Math.floor(ctx.sampleRate * 1.1);
+    cachedScreechBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = cachedScreechBuf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+  }
   const noise = ctx.createBufferSource();
-  noise.buffer = buffer;
+  noise.buffer = cachedScreechBuf;
   const hp = ctx.createBiquadFilter();
   hp.type = 'highpass';
   hp.frequency.value = 1800;

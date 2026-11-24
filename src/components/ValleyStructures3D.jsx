@@ -77,12 +77,27 @@ function KampungStiltHouse({
             <boxGeometry args={[0.82, 0.72, 1.15]} />
             <meshStandardMaterial color="#423022" roughness={0.88} />
           </mesh>
-          {!hasTornMap && (
-            <mesh position={[0.04, 0.75, 0.28]} rotation={[-Math.PI / 2, 0, 0.22]}>
-              <planeGeometry args={[0.48, 0.38]} />
-              <meshStandardMaterial color="#e0d0a8" emissive="#c4ab72" emissiveIntensity={0.45} />
+          {/* Physical Unfolded & Partially Rolled Parchment Torn Map Sitting Flush on Porch Table */}
+          <group visible={!hasTornMap} position={[0.04, 0.73, 0.28]} rotation={[0, 0.22, 0]}>
+            <mesh>
+              <boxGeometry args={[0.52, 0.018, 0.4]} />
+              <meshStandardMaterial color="#ead8ae" emissive="#c4ab72" emissiveIntensity={0.45} roughness={0.82} />
             </mesh>
-          )}
+            {/* Drawn ink trail markings on parchment */}
+            <mesh position={[0, 0.011, 0]}>
+              <boxGeometry args={[0.34, 0.004, 0.025]} />
+              <meshBasicMaterial color="#3b2b1d" />
+            </mesh>
+            <mesh position={[0.05, 0.011, 0.06]} rotation={[0, 0.65, 0]}>
+              <boxGeometry args={[0.24, 0.004, 0.02]} />
+              <meshBasicMaterial color="#4a3523" />
+            </mesh>
+            {/* Rolled parchment cylinder along left edge for unmistakable 3D silhouette */}
+            <mesh position={[-0.25, 0.022, 0]} rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.032, 0.032, 0.41, 10]} />
+              <meshStandardMaterial color="#dfd0a2" emissive="#b59b62" emissiveIntensity={0.35} roughness={0.8} />
+            </mesh>
+          </group>
           {/* Boarded-Up Crate Lid (Nailed Shut Until Pried With Heavy Crowbar) */}
           {!cratePried && !hasBelt && (
             <group position={[-0.04, 0.88, -0.28]}>
