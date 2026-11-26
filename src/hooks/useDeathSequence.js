@@ -5,9 +5,9 @@
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getDeathWhisper } from '../data/deathWhispers';
-import { MONOLOGUE } from '../data/monologueData';
-import { playJumpscareScreech } from '../components/AudioEngine';
+import { getDeathWhisper } from '../data/chapter1/deathWhispers';
+import { MONOLOGUE } from '../data/chapter1/monologueData';
+import { playJumpscareScreech } from '../components/shared/AudioEngine';
 
 const JUMPSCARE_MS = 1400;
 

@@ -8,23 +8,23 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import EscapeChaseScene from '../components/EscapeChaseScene';
-import TypewriterSubtitle from '../components/TypewriterSubtitle';
+import EscapeChaseScene from '../components/chapter1/EscapeChaseScene';
+import TypewriterSubtitle from '../components/shared/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
-import { CHASE_DISTANCE, MAX_INTEGRITY } from '../data/escapeChaseData';
+import { CHASE_DISTANCE, MAX_INTEGRITY } from '../data/chapter1/escapeChaseData';
 import {
   startForestNightAmbience,
   stopForestNightAmbience,
-} from '../components/ForestAmbienceAudio';
+} from '../components/chapter1/ForestAmbienceAudio';
 import {
   startDrivingEngineAudio,
   stopDrivingEngineAudio,
-} from '../components/AmbientMusicAudio';
+} from '../components/shared/AmbientMusicAudio';
 import {
   startEscapeChaseTheme,
   stopEscapeChaseTheme,
-} from '../components/ChaseThemeAudio';
-import { playJumpscareScream, prewarmJumpscareAudio } from '../components/JumpscareAudio';
+} from '../components/chapter1/ChaseThemeAudio';
+import { playJumpscareScream, prewarmJumpscareAudio } from '../components/shared/JumpscareAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();

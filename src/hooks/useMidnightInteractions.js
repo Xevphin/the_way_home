@@ -9,12 +9,12 @@
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { MONOLOGUE } from '../data/monologueData';
-import { getTreeFlyerById } from '../data/treeFlyersData';
-import { getSubtitleDurationMs } from '../data/dialogueTiming';
-import { SURAU_ELDER_DIALOGUE } from '../components/SurauElderNPC';
-import { playSanctuaryChime } from '../components/AudioEngine';
-import { playChoreChime, playDoorLatch } from '../components/MorningAudio';
+import { MONOLOGUE } from '../data/chapter1/monologueData';
+import { getTreeFlyerById } from '../data/chapter1/treeFlyersData';
+import { getSubtitleDurationMs } from '../data/shared/dialogueTiming';
+import { SURAU_ELDER_DIALOGUE } from '../components/chapter1/SurauElderNPC';
+import { playSanctuaryChime } from '../components/shared/AudioEngine';
+import { playChoreChime, playDoorLatch } from '../components/shared/MorningAudio';
 import useMidnightScares from './useMidnightScares';
 
 function releasePointer() {

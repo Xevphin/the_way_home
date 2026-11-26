@@ -8,20 +8,20 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import TownWorld3D from '../components/TownWorld3D';
-import TownDriveCutscene from '../components/TownDriveCutscene';
-import CampusWorld3D from '../components/CampusWorld3D';
-import CampusEncounter from '../components/CampusEncounter';
-import SunsetTransition from '../components/SunsetTransition';
-import EveningCampusController from '../components/EveningCampusController';
-import ObjectiveHud from '../components/ObjectiveHud';
-import SafeZoneBanner from '../components/SafeZoneBanner';
+import TownWorld3D from '../components/chapter1/TownWorld3D';
+import TownDriveCutscene from '../components/chapter1/TownDriveCutscene';
+import CampusWorld3D from '../components/chapter1/CampusWorld3D';
+import CampusEncounter from '../components/chapter1/CampusEncounter';
+import SunsetTransition from '../components/chapter1/SunsetTransition';
+import EveningCampusController from '../components/chapter1/EveningCampusController';
+import ObjectiveHud from '../components/shared/ObjectiveHud';
+import SafeZoneBanner from '../components/shared/SafeZoneBanner';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
-import { playDoorLatch } from '../components/MorningAudio';
+import { playDoorLatch } from '../components/shared/MorningAudio';
 import {
   startCampusAmbience,
   stopCampusAmbience,
-} from '../components/AmbientMusicAudio';
+} from '../components/shared/AmbientMusicAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) {

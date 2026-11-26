@@ -5,8 +5,8 @@
 // ============================================================================
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { MONOLOGUE } from '../data/monologueData';
-import { getSubtitleDurationMs } from '../data/dialogueTiming';
+import { MONOLOGUE } from '../data/chapter1/monologueData';
+import { getSubtitleDurationMs } from '../data/shared/dialogueTiming';
 
 export default function useSubtitles({ gameplayActive, playerPosRef }) {
   const [subtitle, setSubtitle] = useState(null);

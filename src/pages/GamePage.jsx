@@ -9,23 +9,23 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
-import { createInitialGameProgress } from '../data/gameState';
-import { buildInitialMidnightProgress, getInitialMidnightSpawn } from '../data/midnightSpawns';
-import { preloadAllForestModels } from '../data/modelCatalog';
-import { INITIAL_CUTSCENE_STATE, MONOLOGUE, POST_CRASH_STATE } from '../data/monologueData';
-import GameWorldScene from '../components/GameWorldScene';
-import GameHudOverlays from '../components/GameHudOverlays';
+import { createInitialGameProgress } from '../data/shared/gameState';
+import { buildInitialMidnightProgress, getInitialMidnightSpawn } from '../data/chapter1/midnightSpawns';
+import { preloadAllForestModels } from '../data/shared/modelCatalog';
+import { INITIAL_CUTSCENE_STATE, MONOLOGUE, POST_CRASH_STATE } from '../data/chapter1/monologueData';
+import GameWorldScene from '../components/chapter1/GameWorldScene';
+import GameHudOverlays from '../components/chapter1/GameHudOverlays';
 import useFlashlightBattery from '../hooks/useFlashlightBattery';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import useSubtitles from '../hooks/useSubtitles';
 import useMidnightInteractions from '../hooks/useMidnightInteractions';
-import { playSanctuaryChime } from '../components/AudioEngine';
-import { playFlashlightClick } from '../components/SurfaceFootstepsAudio';
+import { playSanctuaryChime } from '../components/shared/AudioEngine';
+import { playFlashlightClick } from '../components/shared/SurfaceFootstepsAudio';
 import {
   playCrashShockRinging, playWhisperScare, prewarmCrashShockRinging, startForestNightAmbience, stopForestNightAmbience,
-} from '../components/ForestAmbienceAudio';
-import { prewarmCrashAudio } from '../components/RadioAudio';
-import { prewarmJumpscareAudio } from '../components/JumpscareAudio';
+} from '../components/chapter1/ForestAmbienceAudio';
+import { prewarmCrashAudio } from '../components/chapter1/RadioAudio';
+import { prewarmJumpscareAudio } from '../components/shared/JumpscareAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();

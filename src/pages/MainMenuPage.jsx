@@ -9,23 +9,26 @@
 
 import React, { useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import MainMenuCoverScene from '../components/MainMenuCoverScene';
-import HelpModal from '../components/HelpModal';
-import { MOVIE_END_CREDITS } from '../data/finaleScriptData';
+import MainMenuCoverScene from '../components/shared/MainMenuCoverScene';
+import HelpModal from '../components/shared/HelpModal';
+import ChooseChapterModal from '../components/shared/ChooseChapterModal';
+import { MOVIE_END_CREDITS } from '../data/chapter1/finaleScriptData';
 import {
   fadeOutMenuAmbience,
   setMenuAmbienceVolume,
   startMenuAmbience,
-} from '../components/menuAmbience';
+} from '../components/shared/menuAmbience';
 
 export default function MainMenuPage({
   settings,
   savedStageLabel = null,
   onContinueStory,
   onStartPlay,
+  onStartChapter2,
+  onWatchTrailer,
   onUpdateSettings,
 }) {
-  const [activeModal, setActiveModal] = useState(null); // 'SETTINGS' | 'HELP' | 'CREDITS' | null
+  const [activeModal, setActiveModal] = useState(null); // 'CHOOSE_CHAPTER' | 'SETTINGS' | 'HELP' | 'CREDITS' | null
 
   useEffect(() => {
     setMenuAmbienceVolume(settings.volume);
@@ -48,9 +51,34 @@ export default function MainMenuPage({
     onContinueStory();
   };
 
-  const handleStartPlay = () => {
+  const handleWatchTrailer = () => {
+    setActiveModal(null);
+    fadeOutMenuAmbience(0.35);
+    onWatchTrailer?.();
+  };
+
+  // Optional [T] keyboard shortcut on Main Menu (when no modal is open) to launch trailer
+  useEffect(() => {
+    if (activeModal || !onWatchTrailer) return undefined;
+    const onKey = (e) => {
+      if (e.code === 'KeyT' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        fadeOutMenuAmbience(0.35);
+        onWatchTrailer();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [activeModal, onWatchTrailer]);
+
+  const handleSelectChapter = (chapterId) => {
+    setActiveModal(null);
     fadeOutMenuAmbience(0.8);
-    onStartPlay();
+    if (chapterId === 'CHAPTER_2') {
+      onStartChapter2?.();
+    } else {
+      onStartPlay();
+    }
   };
 
   return (
@@ -80,9 +108,9 @@ export default function MainMenuPage({
             <button
               type="button"
               className={`menu-link-btn ${savedStageLabel ? '' : 'primary'}`}
-              onClick={handleStartPlay}
+              onClick={() => setActiveModal('CHOOSE_CHAPTER')}
             >
-              New Game
+              Play Game
             </button>
             <button
               type="button"
@@ -105,6 +133,16 @@ export default function MainMenuPage({
             >
               Credits
             </button>
+            {onWatchTrailer && (
+              <button
+                type="button"
+                className="menu-link-btn"
+                onClick={handleWatchTrailer}
+                title="Watch Chapter 1 Trailer [T]"
+              >
+                Watch Trailer
+              </button>
+            )}
           </nav>
         </div>
       </div>
@@ -212,6 +250,11 @@ export default function MainMenuPage({
         </div>
       )}
 
+      <ChooseChapterModal
+        open={activeModal === 'CHOOSE_CHAPTER'}
+        onSelectChapter={handleSelectChapter}
+        onClose={() => setActiveModal(null)}
+      />
       <HelpModal open={activeModal === 'HELP'} onClose={() => setActiveModal(null)} />
     </div>
   );

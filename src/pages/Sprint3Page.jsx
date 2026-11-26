@@ -8,9 +8,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import EveningHighwayScene from '../components/EveningHighwayScene';
-import CafeArrivalScene from '../components/CafeArrivalScene';
-import TypewriterSubtitle from '../components/TypewriterSubtitle';
+import EveningHighwayScene from '../components/chapter1/EveningHighwayScene';
+import CafeArrivalScene from '../components/chapter1/CafeArrivalScene';
+import TypewriterSubtitle from '../components/shared/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 
 export default function Sprint3Page({

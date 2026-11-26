@@ -9,30 +9,30 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { MORNING_CHORES, getChapter1Task } from '../data/chapter1Data';
-import { getSubtitleDurationMs } from '../data/dialogueTiming';
+import { MORNING_CHORES, getChapter1Task } from '../data/chapter1/chapter1Data';
+import { getSubtitleDurationMs } from '../data/shared/dialogueTiming';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
-import HomeInterior from '../components/HomeInterior';
-import MorningCutscene from '../components/MorningCutscene';
-import HomePlayerController from '../components/HomePlayerController';
-import DoorFriendCutscene from '../components/DoorFriendCutscene';
-import OpeningCreditsOverlay from '../components/OpeningCreditsOverlay';
-import ChapterTitleCard from '../components/ChapterTitleCard';
-import ObjectiveHud from '../components/ObjectiveHud';
-import TutorialPrompts from '../components/TutorialPrompts';
-import SafeZoneBanner from '../components/SafeZoneBanner';
+import HomeInterior from '../components/shared/HomeInterior';
+import MorningCutscene from '../components/chapter1/MorningCutscene';
+import HomePlayerController from '../components/chapter1/HomePlayerController';
+import DoorFriendCutscene from '../components/chapter1/DoorFriendCutscene';
+import OpeningCreditsOverlay from '../components/shared/OpeningCreditsOverlay';
+import ChapterTitleCard from '../components/shared/ChapterTitleCard';
+import ObjectiveHud from '../components/shared/ObjectiveHud';
+import TutorialPrompts from '../components/shared/TutorialPrompts';
+import SafeZoneBanner from '../components/shared/SafeZoneBanner';
 import {
   playChoreChime,
   playDoorKnock,
   playDoorLatch,
   setMorningVolume,
-} from '../components/MorningAudio';
+} from '../components/shared/MorningAudio';
 import {
   startMorningMusic,
   startMorningOutdoorAmbience,
   stopMorningMusic,
   stopMorningOutdoorAmbience,
-} from '../components/AmbientMusicAudio';
+} from '../components/shared/AmbientMusicAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) {

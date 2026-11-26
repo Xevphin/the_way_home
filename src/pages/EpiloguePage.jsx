@@ -10,20 +10,20 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import UstazLightDomeCutscene from '../components/UstazLightDomeCutscene';
-import NightArrival247Scene from '../components/NightArrival247Scene';
-import NextMorningEpilogue from '../components/NextMorningEpilogue';
-import Chapter1FinaleEnding from '../components/Chapter1FinaleEnding';
-import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
-import TypewriterSubtitle from '../components/TypewriterSubtitle';
+import UstazLightDomeCutscene from '../components/chapter1/UstazLightDomeCutscene';
+import NightArrival247Scene from '../components/chapter1/NightArrival247Scene';
+import NextMorningEpilogue from '../components/chapter1/NextMorningEpilogue';
+import Chapter1FinaleEnding from '../components/chapter1/Chapter1FinaleEnding';
+import PhoneTimeOverlay from '../components/shared/PhoneTimeOverlay';
+import TypewriterSubtitle from '../components/shared/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
-import { EPILOGUE_CHORES, getEpilogueTask } from '../data/epilogueData';
+import { EPILOGUE_CHORES, getEpilogueTask } from '../data/chapter1/epilogueData';
 import { saveActiveCheckpoint } from '../utils/saveStorage';
-import { playChoreChime, playDoorKnock } from '../components/MorningAudio';
+import { playChoreChime, playDoorKnock } from '../components/shared/MorningAudio';
 import {
   startMorningMusic,
   stopAllSceneAmbience,
-} from '../components/AmbientMusicAudio';
+} from '../components/shared/AmbientMusicAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();

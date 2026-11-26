@@ -6,9 +6,9 @@
 // ============================================================================
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { QURAN_VERSE_DATA } from '../data/objectivesData';
+import { QURAN_VERSE_DATA } from '../data/chapter1/objectivesData';
 
-export default function LoadingPage({ onFinishedLoading }) {
+export default function LoadingPage({ onFinishedLoading, verse = QURAN_VERSE_DATA }) {
   const [progressPct, setProgressPct] = useState(0);
   const [fadingOut, setFadingOut] = useState(false);
 
@@ -68,15 +68,15 @@ export default function LoadingPage({ onFinishedLoading }) {
       {/* Seamless Borderless Verse Typography with Staggered Fade-In */}
       <div className="loading-verse-seamless">
         <p className="verse-arabic-text stagger-1" dir="rtl" lang="ar">
-          {QURAN_VERSE_DATA.arabic}
+          {verse.arabic}
         </p>
 
         <blockquote className="verse-translation-text stagger-2">
-          <em>{QURAN_VERSE_DATA.translation}</em>
+          <em>{verse.translation}</em>
         </blockquote>
 
         <div className="verse-citation-text stagger-3">
-          {QURAN_VERSE_DATA.citation}
+          {verse.citation}
         </div>
       </div>
 

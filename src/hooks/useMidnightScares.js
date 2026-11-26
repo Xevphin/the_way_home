@@ -8,8 +8,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { playJumpscareScream } from '../components/JumpscareAudio';
-import { playDoorSlamScare, playWhisperScare } from '../components/ForestAmbienceAudio';
+import { playJumpscareScream } from '../components/shared/JumpscareAudio';
+import { playDoorSlamScare, playWhisperScare } from '../components/chapter1/ForestAmbienceAudio';
 
 const DEATH_WHISPERS = [
   'Never stray from the lantern light after midnight...',

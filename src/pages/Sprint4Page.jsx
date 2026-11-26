@@ -8,12 +8,12 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
-import CafeHangoutScene from '../components/CafeHangoutScene';
-import NightTrafficDetour from '../components/NightTrafficDetour';
-import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
-import TypewriterSubtitle from '../components/TypewriterSubtitle';
+import CafeHangoutScene from '../components/chapter1/CafeHangoutScene';
+import NightTrafficDetour from '../components/chapter1/NightTrafficDetour';
+import PhoneTimeOverlay from '../components/shared/PhoneTimeOverlay';
+import TypewriterSubtitle from '../components/shared/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
-import { preloadAllForestModels } from '../data/modelCatalog';
+import { preloadAllForestModels } from '../data/shared/modelCatalog';
 import { saveActiveCheckpoint } from '../utils/saveStorage';
 
 export default function Sprint4Page({

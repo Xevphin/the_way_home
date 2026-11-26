@@ -1,0 +1,234 @@
+/* ============================================================================
+   src/chapter2.css
+   Styling for Telltale-style "Choose Chapter" carousel + Chapter 2 overlays:
+   - Dark-glass horizontal chapter selector with active card elevation
+   - Eyelid wake-up curtain bars, white-to-black nightmare flash, completion screen
+   ============================================================================ */
+
+.choose-chapter-backdrop {
+  background: rgba(3, 5, 10, 0.84);
+  backdrop-filter: blur(12px);
+}
+
+.choose-chapter-shell {
+  width: min(1040px, 94vw);
+  padding: 1.8rem 2rem 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(12, 16, 26, 0.94), rgba(7, 9, 15, 0.97));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.78);
+  user-select: none;
+}
+
+.choose-chapter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.35rem;
+}
+
+.choose-chapter-heading {
+  margin: 0.2rem 0 0;
+  font-size: 1.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f8fafc;
+}
+
+.chapter-carousel-stage {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.chapter-carousel-viewport {
+  flex: 1;
+  overflow: hidden;
+  padding: 0.6rem 0.25rem;
+}
+
+.chapter-carousel-track {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 1.4rem;
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chapter-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(14, 18, 28, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0.72;
+  transform: scale(0.96);
+  transition: transform 0.32s ease, opacity 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease;
+  cursor: pointer;
+}
+
+.chapter-card.active {
+  opacity: 1;
+  transform: scale(1);
+  border-color: rgba(240, 198, 122, 0.65);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.62), 0 0 24px rgba(240, 198, 122, 0.14);
+}
+
+.chapter-card-art-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #05070d;
+  overflow: hidden;
+}
+
+.chapter-card-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.chapter-card-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.28rem 0.68rem;
+  border-radius: 4px;
+  background: rgba(6, 9, 16, 0.82);
+  border: 1px solid rgba(240, 198, 122, 0.55);
+  color: #f4d392;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.chapter-card-body {
+  padding: 1.05rem 1.2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.chapter-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
+}
+
+.chapter-card-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(240, 198, 122, 0.85);
+}
+
+.chapter-card-desc {
+  margin: 0.65rem 0 1.05rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: rgba(215, 224, 238, 0.78);
+  flex: 1;
+}
+
+.chapter-card-play-btn {
+  width: 100%;
+  padding: 0.72rem 1rem;
+  border-radius: 7px;
+  border: 1px solid rgba(240, 198, 122, 0.62);
+  background: linear-gradient(135deg, rgba(224, 174, 86, 0.22), rgba(168, 114, 42, 0.3));
+  color: #fff6e5;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.18s ease;
+}
+
+.chapter-card-play-btn:hover {
+  background: linear-gradient(135deg, rgba(240, 194, 108, 0.38), rgba(188, 132, 54, 0.45));
+  transform: translateY(-1px);
+}
+
+.chapter-nav-arrow {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 20, 32, 0.82);
+  color: #f8fafc;
+  font-size: 1.65rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.chapter-nav-arrow:hover:not(:disabled) {
+  background: rgba(240, 198, 122, 0.24);
+  border-color: rgba(240, 198, 122, 0.65);
+}
+
+.chapter-nav-arrow:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.chapter-carousel-hint {
+  margin-top: 0.9rem;
+  text-align: center;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: rgba(203, 213, 225, 0.62);
+}
+
+/* Chapter 2 Cutscene 1 — Blinking Eyelid Wake-Up Bars */
+.ch2-eyelid-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 52vh;
+  background: #000000;
+  z-index: 44;
+  pointer-events: none;
+  animation: ch2EyelidPart 4.4s cubic-bezier(0.35, 0, 0.25, 1) forwards;
+}
+
+.ch2-eyelid-bar.top {
+  top: 0;
+  transform-origin: top center;
+}
+
+.ch2-eyelid-bar.bottom {
+  bottom: 0;
+  transform-origin: bottom center;
+}
+
+@keyframes ch2EyelidPart {
+  0% { transform: scaleY(1); }
+  22% { transform: scaleY(0.68); }
+  36% { transform: scaleY(0.95); }
+  58% { transform: scaleY(0.35); }
+  70% { transform: scaleY(0.56); }
+  100% { transform: scaleY(0); }
+}
+
+/* Sharp White-to-Black Nightmare Flash Into 08:30 Bedroom */
+.ch2-wake-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  pointer-events: none;
+  animation: ch2FlashWake 1.25s ease-out forwards;
+}
+
+@keyframes ch2FlashWake {
+  0% { background: #ffffff; opacity: 1; }
+  22% { background: #ffffff; opacity: 0.95; }
+  55% { background: #000000; opacity: 0.92; }
+  100% { background: #000000; opacity: 0; }
+}
