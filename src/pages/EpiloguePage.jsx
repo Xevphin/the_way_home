@@ -18,6 +18,7 @@ import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
 import TypewriterSubtitle from '../components/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import { EPILOGUE_CHORES, getEpilogueTask } from '../data/epilogueData';
+import { saveActiveCheckpoint } from '../utils/saveStorage';
 import { playChoreChime, playDoorKnock } from '../components/MorningAudio';
 import {
   startMorningMusic,
@@ -101,6 +102,7 @@ export default function EpiloguePage({
     clearTimeout(subTimerRef.current);
     setSubtitle(null);
     setFadeOpacity(0);
+    saveActiveCheckpoint('ARRIVAL_HOME');
     setStage('ARRIVAL_247');
   }, []);
 
@@ -112,6 +114,7 @@ export default function EpiloguePage({
     setFadeOpacity(1);
     setFadeCaption('08:30 AM — Your House');
     transTimerRef.current = setTimeout(() => {
+      saveActiveCheckpoint('EPILOGUE_MORNING');
       setStage('NEXT_MORNING');
       fadeInTimerRef.current = setTimeout(() => {
         setFadeCaption('');
@@ -129,6 +132,7 @@ export default function EpiloguePage({
     setTimeout(() => {
       setHafizActive(false);
       setFadeOpacity(0);
+      saveActiveCheckpoint('SOFA_REVELATION');
       setStage('SOFA_REVELATION');
     }, 820);
   }, []);

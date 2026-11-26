@@ -10,13 +10,9 @@ import LoadingPage from './pages/LoadingPage';
 import PauseMenuOverlay, { lockGameplayPointer } from './components/PauseMenuOverlay';
 import SaveIconToast from './components/SaveIconToast';
 import {
-  SAVE_STAGE_LABELS,
-  hasCompletedChapter1,
-  loadSavedChapterProgress,
-  loadUserSettings,
-  saveChapterProgress,
-  saveUserSettings,
-} from './data/gameState';
+  CHECKPOINT_LABELS, checkpointToScreen, clearActiveCheckpoint, getActiveCheckpoint,
+  loadUserSettings, normalizeCheckpoint, saveActiveCheckpoint, saveUserSettings,
+} from './utils/saveStorage';
 import { preloadCoreModels } from './data/modelCatalog';
 import { setMasterVolume } from './components/AudioEngine';
 import { setMorningVolume } from './components/MorningAudio';
@@ -74,8 +70,7 @@ export default function App() {
   const [targetChapter, setTargetChapter] = useState('CHAPTER_1');
   const [pauseOpen, setPauseOpen] = useState(false);
   const [savePulse, setSavePulse] = useState(false);
-  const [savedStage, setSavedStage] = useState(() => loadSavedChapterProgress());
-  const [chapter1Unlocked, setChapter1Unlocked] = useState(() => hasCompletedChapter1());
+  const [savedStage, setSavedStage] = useState(() => getActiveCheckpoint());
   const saveTimerRef = useRef(null);
   const [settings, setSettings] = useState(() => {
     const initial = loadUserSettings();
@@ -94,11 +89,12 @@ export default function App() {
     });
   }, []);
 
-  // Auto-save current Chapter 1 stage whenever entering an active chapter stage
+  // Auto-save active checkpoint whenever entering a major story scene
   useEffect(() => {
-    if (!SAVE_STAGE_LABELS[screen]) return;
-    saveChapterProgress(screen);
-    setSavedStage(screen);
+    const checkpoint = normalizeCheckpoint(screen);
+    if (!checkpoint) return;
+    saveActiveCheckpoint(checkpoint);
+    setSavedStage(checkpoint);
     triggerSavePulse();
   }, [screen, triggerSavePulse]);
 
@@ -111,8 +107,7 @@ export default function App() {
     stopRevelationDrone();
     stopEndCreditsPiano();
     if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
-    setChapter1Unlocked(hasCompletedChapter1());
-    setSavedStage(loadSavedChapterProgress());
+    setSavedStage(getActiveCheckpoint());
     setScreen('MAIN_MENU');
   }, []);
 
@@ -164,9 +159,15 @@ export default function App() {
     }
   };
 
+  const handleNewGame = () => {
+    clearActiveCheckpoint();
+    setSavedStage(null);
+    startStory('CHAPTER_1');
+  };
+
   const handleContinueStory = () => {
     if (!savedStage) return;
-    handleSelectScene(savedStage);
+    handleSelectScene(checkpointToScreen(savedStage));
   };
 
   const showChapter1 =
@@ -185,14 +186,10 @@ export default function App() {
     screen === 'END_CREDITS';
 
   const epilogueInitialStage =
-    screen === 'ARRIVAL_247'
-      ? 'ARRIVAL_247'
-      : screen === 'EPILOGUE_MORNING'
-        ? 'NEXT_MORNING'
-        : screen === 'SOFA_REVELATION'
-          ? 'SOFA_REVELATION'
-          : screen === 'END_CREDITS'
-            ? 'END_CREDITS'
+    screen === 'ARRIVAL_247' ? 'ARRIVAL_247'
+      : screen === 'EPILOGUE_MORNING' ? 'NEXT_MORNING'
+        : screen === 'SOFA_REVELATION' ? 'SOFA_REVELATION'
+          : screen === 'END_CREDITS' ? 'END_CREDITS'
             : 'USTAZ_DOME';
 
   return (
@@ -200,9 +197,9 @@ export default function App() {
       {screen === 'MAIN_MENU' && (
         <MainMenuPage
           settings={settings}
-          savedStageLabel={savedStage ? SAVE_STAGE_LABELS[savedStage] : null}
+          savedStageLabel={savedStage ? CHECKPOINT_LABELS[savedStage] : null}
           onContinueStory={handleContinueStory}
-          onStartPlay={() => startStory('CHAPTER_1')}
+          onStartPlay={handleNewGame}
           onUpdateSettings={handleUpdateSettings}
         />
       )}

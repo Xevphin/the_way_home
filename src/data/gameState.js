@@ -1,94 +1,23 @@
 // ============================================================================
 // src/data/gameState.js
-// Manages settings persistence, initial Demo 1 gameplay state, and
-// spatial Safe Zone boundary calculations.
+// Delegates save/settings persistence to src/utils/saveStorage.js and manages
+// initial Midnight Forest gameplay state & Safe Zone boundary calculations.
 // ============================================================================
 
 import { SAFE_ZONES, SCAVENGE_ITEMS } from './objectivesData';
-
-const STORAGE_KEY = 'the_way_home_settings_v1';
-const CH1_COMPLETE_KEY = 'the_way_home_ch1_complete_v1';
-const CH1_SAVE_KEY = 'the_way_home_ch1_save_v1';
-
-export const SAVE_STAGE_LABELS = {
-  CHAPTER_1: 'Morning Routine',
-  SPRINT_2: 'Universiti Alam',
-  SPRINT_3: 'Evening Highway',
-  SPRINT_4: 'Late-Night Cafe',
-  MIDNIGHT_FOREST: 'Midnight Forest',
-  ESCAPE_CHASE: 'Escape Chase',
-  EPILOGUE: 'Epilogue',
-};
-
-export function saveChapterProgress(stage) {
-  if (!SAVE_STAGE_LABELS[stage]) return;
-  try {
-    localStorage.setItem(CH1_SAVE_KEY, stage);
-  } catch {
-    // Ignore storage quota errors
-  }
-}
-
-export function loadSavedChapterProgress() {
-  try {
-    const val = localStorage.getItem(CH1_SAVE_KEY);
-    return val && SAVE_STAGE_LABELS[val] ? val : null;
-  } catch {
-    return null;
-  }
-}
-
-export function hasCompletedChapter1() {
-  try {
-    return localStorage.getItem(CH1_COMPLETE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-}
-
-export function markChapter1Completed() {
-  try {
-    localStorage.setItem(CH1_COMPLETE_KEY, 'true');
-  } catch {
-    // Ignore storage quota errors in restricted browsing modes
-  }
-}
-
-export const DEFAULT_SETTINGS = {
-  volume: 0.75,
-  sensitivity: 1.0,
-};
-
-export function loadUserSettings() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_SETTINGS };
-    const parsed = JSON.parse(raw);
-    return {
-      volume:
-        typeof parsed.volume === 'number'
-          ? Math.max(0, Math.min(1, parsed.volume))
-          : DEFAULT_SETTINGS.volume,
-      sensitivity:
-        typeof parsed.sensitivity === 'number'
-          ? Math.max(0.3, Math.min(2.5, parsed.sensitivity))
-          : DEFAULT_SETTINGS.sensitivity,
-    };
-  } catch {
-    return { ...DEFAULT_SETTINGS };
-  }
-}
-
-export function saveUserSettings(partial) {
-  const current = loadUserSettings();
-  const next = { ...current, ...partial };
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  } catch {
-    // Ignore storage quota errors in restricted browsing modes
-  }
-  return next;
-}
+export {
+  CHECKPOINT_LABELS as SAVE_STAGE_LABELS,
+  DEFAULT_SETTINGS,
+  checkpointToScreen,
+  clearActiveCheckpoint,
+  getActiveCheckpoint as loadSavedChapterProgress,
+  hasCompletedChapter1,
+  loadUserSettings,
+  markChapter1Completed,
+  normalizeCheckpoint,
+  saveActiveCheckpoint as saveChapterProgress,
+  saveUserSettings,
+} from '../utils/saveStorage';
 
 export function createInitialGameProgress() {
   return {

@@ -82,7 +82,7 @@ export default function MainMenuPage({
               className={`menu-link-btn ${savedStageLabel ? '' : 'primary'}`}
               onClick={handleStartPlay}
             >
-              Play Story
+              New Game
             </button>
             <button
               type="button"

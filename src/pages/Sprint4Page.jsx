@@ -14,6 +14,7 @@ import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
 import TypewriterSubtitle from '../components/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import { preloadAllForestModels } from '../data/modelCatalog';
+import { saveActiveCheckpoint } from '../utils/saveStorage';
 
 export default function Sprint4Page({
   onReturnToMenu,
@@ -36,6 +37,7 @@ export default function Sprint4Page({
     setSubtitle(null);
     setMood({ spooky: false, montage: false, showPhone: false });
     if (stage === 'CAFE_HANGOUT') {
+      saveActiveCheckpoint('NIGHT_TRAFFIC_DETOUR');
       setStage('NIGHT_DETOUR');
     } else {
       // Crisp 0.5s fade-out + 0.2s hold with timestamp caption -> 0.5s fade-in in GamePage
