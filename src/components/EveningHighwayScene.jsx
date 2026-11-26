@@ -26,7 +26,7 @@ import {
 
 const RAW_HIGHWAY_LINES = [
   {
-    tag: '07:05 PM',
+    tag: '',
     text: 'Cruising along the evening highway toward the cafe... traffic is moving pretty smoothly.',
   },
   {

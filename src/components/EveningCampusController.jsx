@@ -19,12 +19,27 @@ import {
 import { playFootstepSound } from './AudioEngine';
 
 const EVENING_CAR_DOOR = [2.85, 1.05, 5.8];
-const CAMPUS_CAR_COLLIDERS = [
+const CAMPUS_SOLID_COLLIDERS = [
+  // Parked student sedans
   { minX: 2.65, maxX: 4.95, minZ: 3.45, maxZ: 8.15 },
   { minX: -8.35, maxX: -6.05, minZ: 3.65, maxZ: 8.35 },
   { minX: -4.85, maxX: -2.55, minZ: 3.65, maxZ: 8.35 },
   { minX: 6.15, maxX: 8.45, minZ: 3.65, maxZ: 8.35 },
+  // Campus curved lamppost bases along the main walkway
+  { minX: -5.75, maxX: -4.65, minZ: -6.05, maxZ: -4.95 },
+  { minX: 4.65, maxX: 5.75, minZ: -6.05, maxZ: -4.95 },
+  // Campus courtyard perimeter fence / boundary barriers
+  { minX: -12.0, maxX: -10.4, minZ: -15.0, maxZ: 13.0 },
+  { minX: 10.4, maxX: 12.0, minZ: -15.0, maxZ: 13.0 },
+  { minX: -12.0, maxX: 12.0, minZ: -15.0, maxZ: -13.4 },
+  { minX: -12.0, maxX: 12.0, minZ: 11.4, maxZ: 13.0 },
 ];
+
+function hitsCampusCollider(x, z) {
+  return CAMPUS_SOLID_COLLIDERS.some(
+    (c) => x > c.minX && x < c.maxX && z > c.minZ && z < c.maxZ
+  );
+}
 
 export default function EveningCampusController({
   enabled,
@@ -139,12 +154,11 @@ export default function EveningCampusController({
       const nx = THREE.MathUtils.clamp(camera.position.x + move.x * speed * dt, -11, 11);
       const nz = THREE.MathUtils.clamp(camera.position.z + move.z * speed * dt, -14, 12);
 
-      // Solid AABB around all parked campus sedans
-      const hitsCar = CAMPUS_CAR_COLLIDERS.some(
-        (c) => nx > c.minX && nx < c.maxX && nz > c.minZ && nz < c.maxZ
-      );
-      if (!hitsCar) {
+      // Axis-separated AABB resolution for smooth sliding along cars, lampposts & fences
+      if (!hitsCampusCollider(nx, camera.position.z)) {
         camera.position.x = nx;
+      }
+      if (!hitsCampusCollider(camera.position.x, nz)) {
         camera.position.z = nz;
       }
 

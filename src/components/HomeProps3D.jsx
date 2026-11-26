@@ -12,8 +12,8 @@ import LivingRoomFurniture from './LivingRoomFurniture';
 import ModelAsset from './ModelAsset';
 import { MODELS } from '../data/modelCatalog';
 
-// Crisp glowing digital alarm clock reading "08:15 AM • FRI"
-function DigitalAlarmClock({ position }) {
+// Crisp glowing digital alarm clock (defaults to "08:15 AM • FRI", configurable to "08:30 AM • SAT" in Epilogue)
+function DigitalAlarmClock({ position, clockText = '08:15', dayLabel = 'AM  •  FRI' }) {
   const clockTex = useMemo(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 256;
@@ -28,14 +28,14 @@ function DigitalAlarmClock({ position }) {
     ctx.font = 'bold 58px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('08:15', 128, 56);
+    ctx.fillText(clockText, 128, 56);
     ctx.fillStyle = '#a3f7cb';
     ctx.font = 'bold 24px monospace';
-    ctx.fillText('AM  •  FRI', 128, 102);
+    ctx.fillText(dayLabel, 128, 102);
     const tex = new THREE.CanvasTexture(canvas);
     tex.needsUpdate = true;
     return tex;
-  }, []);
+  }, [clockText, dayLabel]);
 
   return (
     <group position={position} rotation={[0, 0.45, 0]}>
@@ -51,7 +51,7 @@ function DigitalAlarmClock({ position }) {
   );
 }
 
-export default function HomeProps3D({ completedChores = [] }) {
+export default function HomeProps3D({ completedChores = [], clockText = '08:15', dayLabel = 'AM  •  FRI' }) {
   const hasDone = (id) => completedChores.includes(id);
 
   return (
@@ -70,7 +70,7 @@ export default function HomeProps3D({ completedChores = [] }) {
           rotation={[0, Math.PI / 2, 0]}
           targetHeight={0.68}
         />
-        <DigitalAlarmClock position={[0.04, 0.77, 0.04]} />
+        <DigitalAlarmClock position={[0.04, 0.77, 0.04]} clockText={clockText} dayLabel={dayLabel} />
       </group>
 
       {/* ================= CHORE 1: KENNEY DESK, LAPTOP & UNIVERSITY BAG ================= */}

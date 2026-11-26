@@ -15,6 +15,11 @@ import * as THREE from 'three';
 import { SAFE_ZONES } from '../data/objectivesData';
 import { getSafeZoneAtPosition } from '../data/gameState';
 import { playHeartbeatPulse, playSpiritRecoilWhisper } from './AudioEngine';
+import {
+  playLurkerBanishScreech,
+  stopLurkerWhispers,
+  updateLurkerWhisperProximity,
+} from './LurkerAudio';
 import ShadowStalkerModel from './ShadowStalkerModel';
 
 const BANISH_CONE_DOT = 0.8; // ~37° half-angle (wider than before)
@@ -60,10 +65,14 @@ export default function ShadowStalker({
     if (respawnTrigger > 0) pendingRespawnRef.current = true;
   }, [respawnTrigger]);
 
+  // Ensure proximity whisper bed fades cleanly to 0 on unmount
+  useEffect(() => () => stopLurkerWhispers(), []);
+
   useFrame(({ clock }, delta) => {
     if (!active || !entityRef.current) {
       if (entityRef.current) entityRef.current.position.set(-11.5, -50, -28.0);
       sendThreat(0);
+      stopLurkerWhispers();
       prevActiveRef.current = false; // Parked underground & pre-warmed until awakened (0ms compile!)
       return;
     }
@@ -96,6 +105,7 @@ export default function ShadowStalker({
       vanishTimerRef.current -= dt;
       entityRef.current.position.set(entityPos.x, -50, entityPos.z);
       sendThreat(0);
+      stopLurkerWhispers();
       if (vanishTimerRef.current <= 0) {
         const side = Math.random() > 0.5 ? -1 : 1;
         entityPos.set(side * (9.5 + Math.random() * 4.5), 0, playerPos.z - 22.0);
@@ -134,7 +144,8 @@ export default function ShadowStalker({
         shroudMatRef.current.opacity = Math.max(0.15, 0.94 - litDurationRef.current * 0.85);
       }
       if (litDurationRef.current >= 0.85) {
-        playSpiritRecoilWhisper();
+        playLurkerBanishScreech();
+        stopLurkerWhispers();
         vanishTimerRef.current = 5.5;
         litDurationRef.current = 0;
         if (shroudMatRef.current) shroudMatRef.current.opacity = 0.94;
@@ -168,21 +179,24 @@ export default function ShadowStalker({
         entityPos.z += (-25.0 - entityPos.z) * dt * 1.1;
       }
       sendThreat(0);
+      stopLurkerWhispers();
     } else if (graceRef.current > 0) {
       // Grace window: lingers at the treeline watching, but does not advance
       retreatPauseRef.current = 0;
       const edge = entityPos.x >= 0 ? 12.5 : -12.5;
       entityPos.x += (edge - entityPos.x) * dt * 0.6;
       sendThreat(0);
+      stopLurkerWhispers();
     } else {
       retreatPauseRef.current = 0;
       const dx = playerPos.x - entityPos.x;
       const dz = playerPos.z - entityPos.z;
       const dist = Math.hypot(dx, dz) || 0.001;
 
-      // Creeps faster when the player is in the dark
+      // Rebalanced pursuit: fast dark chase (~5.6 m/s) + 10m lunge burst (6.9 m/s) nearly matching sprint!
       const inDark = !flashlightOn || batteryLevel <= 2;
-      const stalkSpeed = inDark ? 3.55 : 2.1;
+      const baseChase = inDark ? 5.6 : 3.45;
+      const stalkSpeed = dist < 10.0 ? Math.max(baseChase, 6.85) : baseChase;
       entityPos.x += (dx / dist) * stalkSpeed * dt;
       entityPos.z += (dz / dist) * stalkSpeed * dt;
 
@@ -202,6 +216,10 @@ export default function ShadowStalker({
       const rawThreat = THREE.MathUtils.clamp(1 - newDist / 18.5, 0, 1);
       sendThreat(Math.round(rawThreat * 20) / 20);
 
+      // Distance-scaled eerie multi-voice whisper bed (0 beyond 28m, loud at 3m)
+      const whisperProx = THREE.MathUtils.clamp((28 - newDist) / 25, 0, 1);
+      updateLurkerWhisperProximity(whisperProx);
+
       if (rawThreat > 0.14) {
         heartbeatTimerRef.current += dt;
         const interval = THREE.MathUtils.lerp(1.15, 0.4, rawThreat);
@@ -219,6 +237,7 @@ export default function ShadowStalker({
         vanishTimerRef.current = 7.5;
         entityRef.current.position.set(entityPos.x, -50, entityPos.z);
         sendThreat(0);
+        stopLurkerWhispers();
         playSpiritRecoilWhisper();
         onCatchPlayer?.(catchPos);
         return;

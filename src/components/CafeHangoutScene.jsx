@@ -72,7 +72,7 @@ export default function CafeHangoutScene({
     });
 
     const walkLine = 'Heading back to my car... should be home before midnight.';
-    const walkDur = getSubtitleDurationMs(walkLine, '11:27 PM');
+    const walkDur = getSubtitleDurationMs(walkLine, '');
 
     // Walk out toward the parked car & finish cafe hangout
     timers.push(
@@ -80,7 +80,7 @@ export default function CafeHangoutScene({
         setSpookyStoryDrone(false);
         setMode('WALK_OUT');
         onMoodChange({ spooky: false, montage: false, showPhone: false });
-        onSubtitleChange({ tag: '11:27 PM', text: walkLine });
+        onSubtitleChange({ tag: '', text: walkLine });
       }, accMs)
     );
 

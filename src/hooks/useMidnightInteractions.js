@@ -10,6 +10,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MONOLOGUE } from '../data/monologueData';
+import { getTreeFlyerById } from '../data/treeFlyersData';
 import { getSubtitleDurationMs } from '../data/dialogueTiming';
 import { SURAU_ELDER_DIALOGUE } from '../components/SurauElderNPC';
 import { playSanctuaryChime } from '../components/AudioEngine';
@@ -228,6 +229,11 @@ export default function useMidnightInteractions({
     if (id === 'phantom_stall' && !progress.stallRevealed) {
       setHoverInteractable(null);
       setStallSeqActive(true);
+      return;
+    }
+    if (id.startsWith('tree_flyer_')) {
+      const flyer = getTreeFlyerById(id);
+      if (flyer) showSubtitle({ tag: 'INNER THOUGHT', text: flyer.reaction }, 5200);
     }
   }, [
     hoverInteractable, progress.hasCrowbar, progress.cratePried, progress.hasIronKey,

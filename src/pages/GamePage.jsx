@@ -19,11 +19,13 @@ import useFlashlightBattery from '../hooks/useFlashlightBattery';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import useSubtitles from '../hooks/useSubtitles';
 import useMidnightInteractions from '../hooks/useMidnightInteractions';
-import { playFlashlightClick, playSanctuaryChime } from '../components/AudioEngine';
+import { playSanctuaryChime } from '../components/AudioEngine';
+import { playFlashlightClick } from '../components/SurfaceFootstepsAudio';
 import {
   playCrashShockRinging, playWhisperScare, prewarmCrashShockRinging, startForestNightAmbience, stopForestNightAmbience,
 } from '../components/ForestAmbienceAudio';
 import { prewarmCrashAudio } from '../components/RadioAudio';
+import { prewarmJumpscareAudio } from '../components/JumpscareAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
@@ -64,6 +66,7 @@ export default function GamePage({
     preloadAllForestModels();
     prewarmCrashAudio();
     prewarmCrashShockRinging();
+    prewarmJumpscareAudio();
     if (initialSpawn.skipCutscene) return undefined;
     const t = setTimeout(() => setEntryFadeOpacity(0), 60);
     return () => clearTimeout(t);
@@ -156,8 +159,7 @@ export default function GamePage({
   useCutsceneSkip(inCutscene && !paused, finishCutscene);
 
   const handleToggleFlashlight = useCallback(() => {
-    playFlashlightClick();
-    setFlashlightOn((prev) => !prev);
+    setFlashlightOn((prev) => { playFlashlightClick(!prev); return !prev; });
   }, []);
 
   const handleEnterSafeZone = useCallback((zone) => {
@@ -186,7 +188,7 @@ export default function GamePage({
     !inCutscene && !interactions.stallSeqActive && !progress.chapterCompleted && !paused;
 
   return (
-    <div className="game-page">
+    <div className={`game-page ${interactions.deathPhase === 'JUMPSCARE' ? 'is-jumpscare' : ''}`}>
       {!paused && (
         <button type="button" className="top-menu-escape-btn" onClick={onOpenPause || handleMenu}>
           ← Menu
@@ -195,7 +197,7 @@ export default function GamePage({
 
       <Canvas
         dpr={1}
-        shadows={false}
+        shadows
         camera={{
           fov: 65,
           near: 0.08,

@@ -16,7 +16,6 @@ import NextMorningEpilogue from '../components/NextMorningEpilogue';
 import Chapter1FinaleEnding from '../components/Chapter1FinaleEnding';
 import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
 import TypewriterSubtitle from '../components/TypewriterSubtitle';
-import PickupToast from '../components/PickupToast';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import { EPILOGUE_CHORES, getEpilogueTask } from '../data/epilogueData';
 import { playChoreChime, playDoorKnock } from '../components/MorningAudio';
@@ -38,6 +37,7 @@ export default function EpiloguePage({
 }) {
   const [stage, setStage] = useState(initialStage);
   const [fadeOpacity, setFadeOpacity] = useState(0);
+  const [fadeCaption, setFadeCaption] = useState('');
   const [ustazFlash, setUstazFlash] = useState(false);
   const [wakeBlink, setWakeBlink] = useState(false);
   const [subtitle, setSubtitle] = useState(null);
@@ -46,20 +46,20 @@ export default function EpiloguePage({
   const [doorOpen, setDoorOpen] = useState(false);
   const [hafizActive, setHafizActive] = useState(false);
   const [hoverInteractable, setHoverInteractable] = useState(null);
-  const [pickupToast, setPickupToast] = useState(null);
   const subTimerRef = useRef(null);
-  const toastTimerRef = useRef(null);
   const flashTimerRef = useRef(null);
   const wakeTimerRef = useRef(null);
+  const transTimerRef = useRef(null);
+  const fadeInTimerRef = useRef(null);
+  const transitioningRef = useRef(false);
 
   useEffect(() => {
     if (stage === 'NEXT_MORNING') {
       startMorningMusic();
-      setFadeOpacity(0);
       setWakeBlink(true);
       wakeTimerRef.current = setTimeout(() => setWakeBlink(false), 3150);
       setSubtitle({
-        tag: '08:30 AM • NEXT MORNING',
+        tag: '',
         text: "Barely slept four hours... My head is pounding. Let me wash my face and tidy up before anyone comes over.",
       });
       subTimerRef.current = setTimeout(() => setSubtitle(null), 6200);
@@ -67,16 +67,23 @@ export default function EpiloguePage({
       stopAllSceneAmbience();
       clearTimeout(subTimerRef.current);
       setFadeOpacity(0);
+      setFadeCaption('');
     }
     return () => {
       clearTimeout(subTimerRef.current);
-      clearTimeout(toastTimerRef.current);
       clearTimeout(flashTimerRef.current);
       clearTimeout(wakeTimerRef.current);
     };
   }, [stage]);
 
-  useEffect(() => () => stopAllSceneAmbience(), []);
+  useEffect(
+    () => () => {
+      clearTimeout(transTimerRef.current);
+      clearTimeout(fadeInTimerRef.current);
+      stopAllSceneAmbience();
+    },
+    []
+  );
 
   const showTimedSub = useCallback((tag, text, ms = 5200) => {
     clearTimeout(subTimerRef.current);
@@ -98,10 +105,20 @@ export default function EpiloguePage({
   }, []);
 
   const advanceToMorning = useCallback(() => {
+    if (transitioningRef.current) return;
+    transitioningRef.current = true;
     clearTimeout(subTimerRef.current);
     setSubtitle(null);
-    setFadeOpacity(0);
-    setStage('NEXT_MORNING');
+    setFadeOpacity(1);
+    setFadeCaption('08:30 AM — Your House');
+    transTimerRef.current = setTimeout(() => {
+      setStage('NEXT_MORNING');
+      fadeInTimerRef.current = setTimeout(() => {
+        setFadeCaption('');
+        setFadeOpacity(0);
+        transitioningRef.current = false;
+      }, 220);
+    }, 1350);
   }, []);
 
   const advanceToSofaRevelation = useCallback(() => {
@@ -146,9 +163,6 @@ export default function EpiloguePage({
     const next = [...completedChores, chore.id];
     setCompletedChores(next);
     setHoverInteractable(null);
-    setPickupToast({ id: Date.now(), label: chore.label });
-    clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setPickupToast(null), 1250);
     showTimedSub('INNER THOUGHT', chore.toast, 4600);
 
     if (next.length === EPILOGUE_CHORES.length && !doorKnocked) {
@@ -222,14 +236,15 @@ export default function EpiloguePage({
 
       {ustazFlash && <div className="ustaz-impact-flash" aria-hidden="true" />}
       {wakeBlink && <div className="wake-blink-overlay" aria-hidden="true" />}
-      <div className="smooth-fade-curtain" style={{ opacity: fadeOpacity }} aria-hidden="true" />
+      <div className="smooth-fade-curtain" style={{ opacity: fadeOpacity }} aria-hidden="true">
+        {fadeCaption && <div className="fade-transition-caption">{fadeCaption}</div>}
+      </div>
 
       <PhoneTimeOverlay visible={stage === 'ARRIVAL_247'} variant="arrival" />
 
       {stage === 'NEXT_MORNING' && !hafizActive && !paused && (
         <>
           <div className="minimal-task-hud">
-            <div className="minimal-task-chapter">EPILOGUE • 08:30 AM NEXT MORNING</div>
             <div className="minimal-task-text">
               {getEpilogueTask(completedChores, doorKnocked)}
             </div>
@@ -243,8 +258,6 @@ export default function EpiloguePage({
           )}
         </>
       )}
-
-      <PickupToast toast={pickupToast} />
 
       {subtitle && (
         <TypewriterSubtitle tag={subtitle.tag} text={subtitle.text} inCutscene={isCutsceneBeat} />

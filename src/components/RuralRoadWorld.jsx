@@ -16,6 +16,7 @@ import RoadsideClues3D from './RoadsideClues3D';
 import PhantomStall3D from './PhantomStall3D';
 import ValleyStructures3D from './ValleyStructures3D';
 import ForestLoreAndWatchtower3D from './ForestLoreAndWatchtower3D';
+import ForestTreeFlyers3D from './ForestTreeFlyers3D';
 import SurauElderNPC from './SurauElderNPC';
 import LembahBatuWelcomeSign3D from './LembahBatuWelcomeSign3D';
 import RainMistStreaks3D from './RainMistStreaks3D';
@@ -135,6 +136,7 @@ export default function RuralRoadWorld({
             watchtowerScareActive={watchtowerScareActive}
           />
           <RoadsideClues3D milestoneRead={milestoneRead} shelterRead={shelterRead} />
+          <ForestTreeFlyers3D />
           <ForestryOffice3D
             memoRead={memoRead}
             hasCodeNote={true}

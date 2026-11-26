@@ -80,11 +80,8 @@ export default function LoadingPage({ onFinishedLoading }) {
         </div>
       </div>
 
-      {/* Thin Golden Progress Line + 1-Line Controls Hint at the Bottom */}
+      {/* Thin Golden Progress Line at the Bottom */}
       <div className="bottom-golden-loader">
-        <div className="loading-controls-strip">
-          WASD Move &nbsp;•&nbsp; Shift Sprint &nbsp;•&nbsp; E Interact &nbsp;•&nbsp; F Flashlight &nbsp;•&nbsp; ESC Pause
-        </div>
         <div className="loading-status-caption">
           <span>THE WAY HOME</span>
           <span>{progressPct}%</span>

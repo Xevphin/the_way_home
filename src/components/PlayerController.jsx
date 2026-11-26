@@ -7,7 +7,7 @@
 //   AABB collisions, and flashlight-independent [E] pickups & lore reads!
 // ============================================================================
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import {
@@ -16,6 +16,8 @@ import {
   hitsMidnightCollider,
 } from '../data/midnightLandmarksData';
 import { getSafeZoneAtPosition } from '../data/gameState';
+import { getFlashlightBeamTexture } from '../data/flashlightBeamTexture';
+import { TREE_FLYERS } from '../data/treeFlyersData';
 import { checkCameraLookAtTarget } from '../data/interactionRaycast';
 import {
   clampMouseDelta,
@@ -40,7 +42,7 @@ export default function PlayerController({
   onInteract,
   onEnterSafeZone,
 }) {
-  const { camera, gl, scene } = useThree();
+  const { camera, gl } = useThree();
   const keysRef = useRef({});
   const yawRef = useRef(-0.45);
   const pitchRef = useRef(-0.08);
@@ -50,7 +52,9 @@ export default function PlayerController({
   const currentHoverIdRef = useRef(null);
 
   const spotLightRef = useRef();
+  const fillLightRef = useRef();
   const spotTargetRef = useRef(new THREE.Object3D());
+  const beamMap = useMemo(() => getFlashlightBeamTexture(), []);
   const initializedRef = useRef(false);
   const lastRespawnTriggerRef = useRef(-1);
 
@@ -83,11 +87,6 @@ export default function PlayerController({
     yawRef.current = typeof progress.lastRespawnYaw === 'number' ? progress.lastRespawnYaw : -0.45;
     pitchRef.current = -0.06;
   }, [enabled, respawnTrigger, camera, playerPosRef, playerYawRef, progress.lastRespawnPoint, progress.lastRespawnYaw]);
-
-  useEffect(() => {
-    scene.add(spotTargetRef.current);
-    return () => scene.remove(spotTargetRef.current);
-  }, [scene]);
 
   useEffect(() => {
     if (!enabled) return undefined;
@@ -160,7 +159,7 @@ export default function PlayerController({
 
     if (isMoving) {
       moveDir.normalize();
-      const speed = isSprinting ? 7.8 : 4.8;
+      const speed = isSprinting ? 7.2 : 4.8;
       const nx = THREE.MathUtils.clamp(camera.position.x + moveDir.x * speed * dt, -122.0, 122.0);
       const nz = THREE.MathUtils.clamp(camera.position.z + moveDir.z * speed * dt, -290.0, 14.0);
       const colState = { shedUnlocked: progress.shedUnlocked };
@@ -178,14 +177,22 @@ export default function PlayerController({
 
     playerPosRef.current.copy(camera.position);
 
+    const powerFactor = batteryLevel <= 1 ? 0 : Math.max(0.55, batteryLevel / 100);
     if (spotLightRef.current) {
       spotLightRef.current.position.copy(camera.position);
       const aimDir = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
       spotTargetRef.current.position.copy(camera.position).addScaledVector(aimDir, 12);
+      spotTargetRef.current.updateMatrixWorld();
       spotLightRef.current.target = spotTargetRef.current;
       if (flashlightFlicker && flashlightOn && batteryLevel > 1) {
-        spotLightRef.current.intensity = Math.sin(clock.getElapsedTime() * 48) > -0.15 ? 3.2 : 0.25;
+        spotLightRef.current.intensity =
+          Math.sin(clock.getElapsedTime() * 48) > -0.15 ? 55 * powerFactor : 2.5;
+      } else {
+        spotLightRef.current.intensity = flashlightOn && batteryLevel > 1 ? 55 * powerFactor : 0;
       }
+    }
+    if (fillLightRef.current) {
+      fillLightRef.current.position.copy(camera.position);
     }
 
     const zone = getSafeZoneAtPosition(camera.position.x, camera.position.z);
@@ -230,6 +237,7 @@ export default function PlayerController({
     if (!progress.shelterRead) candidates.push(MIDNIGHT_LANDMARKS.busShelter);
     if (!progress.chestUnlocked) candidates.push(MIDNIGHT_LANDMARKS.wakafChest);
     if (!progress.stallRevealed) candidates.push(MIDNIGHT_LANDMARKS.phantomStall);
+    candidates.push(...TREE_FLYERS);
 
     let nearest = null;
     let bestDist = Infinity;
@@ -249,19 +257,36 @@ export default function PlayerController({
   });
 
   const powerFactor = batteryLevel <= 1 ? 0 : Math.max(0.55, batteryLevel / 100);
-  const beamIntensity = flashlightOn && batteryLevel > 1 ? 3.2 * powerFactor : 0;
+  const beamIntensity = flashlightOn && batteryLevel > 1 ? 55 * powerFactor : 0;
+  const fillIntensity = flashlightOn && batteryLevel > 1 ? 1.8 * powerFactor : 0;
 
-  // Permanently mounted & visible with castShadow={false} so toggling [F] costs 0ms (zero shader recompile!)
+  // castShadow={true} + mounted target enables Three.js SpotLight.map concentric-ring projection!
   return (
-    <spotLight
-      ref={spotLightRef}
-      color="#ffe9c2"
-      intensity={beamIntensity}
-      distance={54}
-      angle={0.62}
-      penumbra={0.62}
-      decay={0.65}
-      castShadow={false}
-    />
+    <>
+      <primitive object={spotTargetRef.current} />
+      <spotLight
+        ref={spotLightRef}
+        target={spotTargetRef.current}
+        color="#f5f8ff"
+        map={beamMap}
+        intensity={beamIntensity}
+        distance={65}
+        angle={0.58}
+        penumbra={0.35}
+        decay={1.25}
+        castShadow={true}
+        shadow-mapSize={[512, 512]}
+        shadow-camera-near={0.4}
+        shadow-camera-far={65}
+        shadow-bias={-0.0005}
+      />
+      <pointLight
+        ref={fillLightRef}
+        color="#e8f0ff"
+        intensity={fillIntensity}
+        distance={8}
+        decay={2}
+      />
+    </>
   );
 }

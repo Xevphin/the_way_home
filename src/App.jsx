@@ -25,6 +25,7 @@ import { setForestAmbienceVolume } from './components/ForestAmbienceAudio';
 import { setVoiceVolume } from './components/DialogueVoiceAudio';
 import { setAmbientMusicVolume, stopAllSceneAmbience } from './components/AmbientMusicAudio';
 import { setMenuAmbienceVolume } from './components/menuAmbience';
+import { setJumpscareVolume } from './components/JumpscareAudio';
 import { setChaseAudioVolume, stopEscapeChaseTheme } from './components/ChaseThemeAudio';
 import {
   setFinaleAudioVolume,
@@ -63,6 +64,7 @@ function applyAllVolumes(vol) {
   setVoiceVolume(vol);
   setAmbientMusicVolume(vol);
   setMenuAmbienceVolume(vol);
+  setJumpscareVolume(vol);
   setChaseAudioVolume(vol);
   setFinaleAudioVolume(vol);
 }

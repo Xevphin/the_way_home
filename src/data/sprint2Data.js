@@ -43,7 +43,7 @@ export const TOWN_PARKED_CARS = [
 export const TOWN_DRIVE_SUBTITLES = [
   {
     timeSec: 0.6,
-    tag: '08:28 AM',
+    tag: '',
     text: 'Clear morning traffic through town... Look around freely while heading to campus.',
   },
   {

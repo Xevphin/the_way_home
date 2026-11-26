@@ -11,7 +11,6 @@ import { Canvas } from '@react-three/fiber';
 import CafeHangoutScene from '../components/CafeHangoutScene';
 import NightTrafficDetour from '../components/NightTrafficDetour';
 import PhoneTimeOverlay from '../components/PhoneTimeOverlay';
-import ObjectiveHud from '../components/ObjectiveHud';
 import TypewriterSubtitle from '../components/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 import { preloadAllForestModels } from '../data/modelCatalog';
@@ -84,15 +83,6 @@ export default function Sprint4Page({
       {isHangout && mood.spooky && <div className="spooky-cafe-vignette" aria-hidden="true" />}
       {isHangout && mood.montage && <div className="montage-warm-glow" aria-hidden="true" />}
       <PhoneTimeOverlay visible={isHangout && mood.showPhone} />
-
-      <ObjectiveHud
-        chapterTitle="Chapter 1:"
-        customTaskText={
-          isHangout
-            ? 'Catch up with Amir at Kafe Tasik Permai'
-            : 'Drive home before tomorrow’s morning lecture'
-        }
-      />
 
       {subtitle && (
         <TypewriterSubtitle tag={subtitle.tag} text={subtitle.text} inCutscene={true} />

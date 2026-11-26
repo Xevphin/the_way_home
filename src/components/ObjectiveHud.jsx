@@ -10,14 +10,12 @@ import { getMidnightChapter1Task } from '../data/midnightLandmarksData';
 
 export default function ObjectiveHud({
   progress,
-  chapterTitle = 'Chapter 1:',
   customTaskText = null,
 }) {
   const activeTaskText = customTaskText || (progress ? getMidnightChapter1Task(progress) : '');
 
   return (
     <aside className="minimal-task-hud" aria-live="polite">
-      <div className="minimal-task-chapter">{chapterTitle}</div>
       <div className="minimal-task-text">{activeTaskText}</div>
     </aside>
   );

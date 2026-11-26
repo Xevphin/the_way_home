@@ -69,11 +69,11 @@ export default function CafeArrivalScene({
 
     const line1 = "Made it to Kafe Tasik Permai. Looks like Amir and the others already grabbed a table outside.";
     const line2 = 'Warm lights, good coffee, and plenty of people around... time to unwind for a few hours.';
-    const d1 = getSubtitleDurationMs(line1, '07:18 PM • TAMAN PERMAI');
+    const d1 = getSubtitleDurationMs(line1, '');
     const d2 = getSubtitleDurationMs(line2, '');
 
     const t1 = setTimeout(() => {
-      onSubtitleChange({ tag: '07:18 PM • TAMAN PERMAI', text: line1 });
+      onSubtitleChange({ tag: '', text: line1 });
     }, 600);
 
     const t2 = setTimeout(() => {

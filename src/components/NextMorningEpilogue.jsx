@@ -218,6 +218,8 @@ export default function NextMorningEpilogue({
         doorOpen={doorOpen}
         doorKnocked={doorKnocked}
         canExitHouse={false}
+        clockText="08:30"
+        dayLabel="AM  •  SAT"
       />
       <EpilogueChoreProps completedChores={completedChores} />
       <HafizDoorCutscene

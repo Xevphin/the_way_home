@@ -75,7 +75,7 @@ export const CAFE_HANGOUT_SCRIPT = [
 export const NIGHT_DETOUR_SCRIPT = [
   {
     timeSec: 0.6,
-    tag: '11:32 PM',
+    tag: '',
     text: "Still wide awake after that teh tarik... Shouldn't take long cruising straight home on E18.",
   },
   {
@@ -90,7 +90,7 @@ export const NIGHT_DETOUR_SCRIPT = [
   },
   {
     timeSec: 12.2,
-    tag: '11:36 PM',
+    tag: '',
     text: 'Just keep the high beams on and drive straight through. How bad can a shortcut be?',
   },
 ];
@@ -98,7 +98,7 @@ export const NIGHT_DETOUR_SCRIPT = [
 export const FOREST_RADIO_SCRIPT = [
   {
     time: 0.6,
-    tag: '11:41 PM • 98.4 FM',
+    tag: '',
     text: 'That spooky wiki story Amir was going on about at the cafe... ghosts stalling cars out here at midnight. People really believe anything they read online.',
   },
   {

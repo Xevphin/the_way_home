@@ -18,7 +18,8 @@ import EscapeChaseEnvironment from './EscapeChaseEnvironment';
 import {
   CHASE_DISTANCE, CHASE_HAZARDS, CHASE_SPEED, LANE_BOUND, ROAR_DURATION,
 } from '../data/escapeChaseData';
-import { playCrashImpactThud, playEngineSputter, playJumpscareScreech } from './AudioEngine';
+import { playCrashImpactThud, playEngineSputter } from './AudioEngine';
+import { playJumpscareScream, playWindowSlamSting } from './JumpscareAudio';
 import { playCarIgnitionSequence, playTireScreech } from './ChaseThemeAudio';
 
 const IGNITION_DURATION = 2.05;
@@ -124,7 +125,7 @@ export default function EscapeChaseScene({
 
       if (!flagsRef.current.roarAudio) {
         flagsRef.current.roarAudio = true;
-        playJumpscareScreech();
+        playJumpscareScream();
         onSubtitle({ tag: 'YOU', text: 'IT HEARD THE ENGINE—GET IN THE CAR! FLOOR IT!' });
       }
 
@@ -142,7 +143,7 @@ export default function EscapeChaseScene({
           playEngineSputter();
           onSubtitle({
             tag: 'INNER THOUGHT',
-            text: 'Steer around the fallen trees and shadows—reach the valley boundary!',
+            text: 'Steer around the fallen trees and shadows—make it to safety!',
           });
         }
         const k = THREE.MathUtils.smoothstep(e, 2.25, ROAR_DURATION);
@@ -229,7 +230,8 @@ export default function EscapeChaseScene({
         if (dz < h.halfZ + 1.45 && dx < h.halfW + 0.72) {
           hitCooldownRef.current = 1.05;
           shakeRef.current = 0.58;
-          playCrashImpactThud();
+          if (h.type === 'lunge') playWindowSlamSting();
+          else playCrashImpactThud();
           onHitObstacle();
         }
       }

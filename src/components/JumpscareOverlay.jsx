@@ -36,10 +36,6 @@ export default function JumpscareOverlay({
   if (phase === 'JUMPSCARE') {
     return (
       <div className="jumpscare-layer" aria-hidden="true">
-        <div className="js-rgb-split red" />
-        <div className="js-rgb-split cyan" />
-        <div className="js-static" />
-        <div className="js-scanlines" />
         <div className="js-vignette" />
       </div>
     );

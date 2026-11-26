@@ -1,12 +1,14 @@
 // ============================================================================
 // src/data/midnightColliders.js
 // Midnight Valley movement helpers:
-// - Zero invisible AABB structure/fence barriers (outer map boundary clamping
-//   is handled in PlayerController.jsx)
+// - Solid AABB fence colliders for Route 312 wooden roadside guardrails
+//   (leaving all designated clearing & Oakside trail turnoffs wide open) and
+//   the Old Ranger Watchtower timber perimeter yard fences
 // - Smooth floor & wooden stair elevation for Surau, Wakaf, Stilt Houses & Watchtower
 // ============================================================================
 
 import { LANDMARK_TRANSFORMS } from './midnightLandmarksData';
+import { ROADSIDE_GUARDRAIL_SEGMENTS } from '../components/RoadsideProps';
 
 function toLocal(x, z, origin) {
   const dx = x - origin.x;
@@ -24,8 +26,28 @@ function getStiltHouseElevation(h) {
   return 0;
 }
 
-// All structure/fence/prop AABB barriers removed so players walk freely everywhere
-export function hitsMidnightCollider() {
+// Solid invisible fence colliders matching all roadside guardrails & compound yard fences
+export function hitsMidnightCollider(x, z) {
+  // 1) Route 312 continuous wooden roadside guardrail fences (openings at every trail turnoff)
+  for (const seg of ROADSIDE_GUARDRAIL_SEGMENTS) {
+    const xPos = seg.side * 4.85;
+    if (Math.abs(x - xPos) < 0.42) {
+      const zMin = Math.min(seg.zStart, seg.zEnd);
+      const zMax = Math.max(seg.zStart, seg.zEnd);
+      if (z >= zMin - 0.25 && z <= zMax + 0.25) return true;
+    }
+  }
+
+  // 2) Old Ranger Watchtower timber perimeter yard fences (local lz = ±4.5, lx in [-4.4, +4.4])
+  const wt = toLocal(x, z, LANDMARK_TRANSFORMS.rangerWatchtower);
+  if (
+    wt.lx >= -4.75 &&
+    wt.lx <= 4.75 &&
+    (Math.abs(wt.lz - 4.5) < 0.42 || Math.abs(wt.lz + 4.5) < 0.42)
+  ) {
+    return true;
+  }
+
   return false;
 }
 

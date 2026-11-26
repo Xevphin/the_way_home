@@ -49,7 +49,7 @@ export default function Chapter1Page({
   const [phase, setPhase] = useState('WAKE_CUTSCENE'); // 'WAKE_CUTSCENE' | 'EXPLORE' | 'DOOR_CUTSCENE'
   const [wakeState, setWakeState] = useState({
     blinkOpening: true,
-    tag: '08:15 AM',
+    tag: '',
     caption: 'Ugh... that morning sun is already bright.',
   });
   const [completedChores, setCompletedChores] = useState([]);

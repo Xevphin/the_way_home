@@ -138,8 +138,10 @@ export default function Sprint2Page({
         )}
       </Canvas>
 
-      {/* Clean Borderless Top-Left Objective UI ("Chapter 1:") */}
-      <ObjectiveHud chapterTitle="Chapter 1:" customTaskText={taskText} />
+      {/* Top-Left Objective UI shown ONLY during playable Evening Walk to Car */}
+      {isEveningWalk && !fadingToBlack && (
+        <ObjectiveHud chapterTitle="Chapter 1:" customTaskText={taskText} />
+      )}
 
       {/* Centered Cinematic "A few hours later..." Time-Skip Intertitle */}
       {stage === 'SUNSET_SKIP' && (

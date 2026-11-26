@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { playJumpscareScreech } from '../components/AudioEngine';
+import { playJumpscareScream } from '../components/JumpscareAudio';
 import { playDoorSlamScare, playWhisperScare } from '../components/ForestAmbienceAudio';
 
 const DEATH_WHISPERS = [
@@ -91,7 +91,7 @@ export default function useMidnightScares({ showSubtitle }) {
     (catchPos) => {
       if (deathPhase) return;
       if (catchPos) catchPosRef.current.copy(catchPos);
-      playJumpscareScreech();
+      playJumpscareScream();
       setDeathWhisper(DEATH_WHISPERS[Math.floor(Math.random() * DEATH_WHISPERS.length)]);
       setDeathPhase('JUMPSCARE');
       schedule(() => {
@@ -99,7 +99,7 @@ export default function useMidnightScares({ showSubtitle }) {
           document.exitPointerLock();
         }
         setDeathPhase('DEATH');
-      }, 1100);
+      }, 1000);
     },
     [deathPhase, schedule]
   );

@@ -63,7 +63,7 @@ export default function MorningCutscene({
         lastStageRef.current = 'wake';
         onUpdateState({
           blinkOpening: true,
-          tag: '08:15 AM',
+          tag: '',
           caption: 'Ugh... that morning sun is already bright.',
         });
       }
@@ -89,7 +89,7 @@ export default function MorningCutscene({
         lastStageRef.current = 'clock';
         onUpdateState({
           blinkOpening: false,
-          tag: '08:15 AM',
+          tag: '',
           caption: "8:15 already... I'd better get ready before morning class.",
         });
       }

@@ -6,7 +6,7 @@
 
 export const MONOLOGUE = {
   cutsceneBeat1: {
-    tag: '11:42 PM',
+    tag: '',
     text: "Almost midnight... Just twenty more minutes past the forest stretch and I'm finally home.",
   },
   cutsceneBeat2Flash: {
@@ -14,20 +14,20 @@ export const MONOLOGUE = {
     text: 'What the—?! Something just stepped right in front of the bumper!',
   },
   cutsceneBeat2Dead: {
-    tag: '11:43 PM',
-    text: "The engine's completely dead. No signal either...",
+    tag: '',
+    text: "What the heck was that?! Something just stepped right in front of the car—my brakes locked up and now the engine's completely dead!",
   },
   cutsceneBeat3Exit: {
     tag: '',
-    text: 'I swear I hit something. I need to check the front of the car.',
+    text: "My hands won't stop shaking... I have to get out and see what I just hit.",
   },
   afterCutscene: {
     tag: '',
-    text: 'I swear I hit something. I need to check the front of the car.',
+    text: "What the heck was that?! No signal, dead engine... I need to check the front of the car.",
   },
   inspectBumper: {
     tag: 'INNER THOUGHT',
-    text: 'Nothing on the road... not a scratch of fur or blood. Just a deep dent. How is that possible?',
+    text: "Nothing on the road... no fur, no blood—just a crushed bumper. Whatever stepped in front of me is still out here in the trees.",
   },
   spotSurau: {
     tag: '',

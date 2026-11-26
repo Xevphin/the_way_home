@@ -24,6 +24,7 @@ import {
   startEscapeChaseTheme,
   stopEscapeChaseTheme,
 } from '../components/ChaseThemeAudio';
+import { playJumpscareScream, prewarmJumpscareAudio } from '../components/JumpscareAudio';
 
 function releasePointer() {
   if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
@@ -40,6 +41,7 @@ export default function EscapeChasePage({ paused = false, onOpenPause, onReturnT
 
   useEffect(() => {
     releasePointer();
+    prewarmJumpscareAudio();
     startForestNightAmbience();
     return () => {
       stopForestNightAmbience();
@@ -76,7 +78,10 @@ export default function EscapeChasePage({ paused = false, onOpenPause, onReturnT
 
     setIntegrity((prev) => {
       const next = Math.max(0, prev - 1);
-      if (next <= 0) setStage('WRECKED');
+      if (next <= 0) {
+        playJumpscareScream();
+        setStage('WRECKED');
+      }
       return next;
     });
   }, []);
@@ -137,7 +142,7 @@ export default function EscapeChasePage({ paused = false, onOpenPause, onReturnT
       {stage === 'DRIVING' && (
         <div className="chase-hud-top" role="status" aria-label="Escape Chase Status">
           <div className="chase-metric-block">
-            <span className="chase-hud-label">CAR INTEGRITY</span>
+            <span className="chase-hud-label">CAR HEALTH</span>
             <div className="chase-integrity-pips">
               {Array.from({ length: MAX_INTEGRITY }).map((_, i) => (
                 <span key={i} className={`chase-pip ${i < integrity ? 'active' : ''}`} />
@@ -147,7 +152,7 @@ export default function EscapeChasePage({ paused = false, onOpenPause, onReturnT
 
           <div className="chase-metric-block wide">
             <div className="chase-distance-row">
-              <span className="chase-hud-label">VALLEY BOUNDARY</span>
+              <span className="chase-hud-label">DISTANCE TO SAFETY</span>
               <span className="chase-distance-val">{metersLeft}m</span>
             </div>
             <div className="chase-progress-track">
@@ -178,7 +183,7 @@ export default function EscapeChasePage({ paused = false, onOpenPause, onReturnT
             <h1 className="death-title">CONSUMED BY THE FOG</h1>
             <div className="death-divider" />
             <p className="death-whisper">
-              &ldquo;The shadow caught up before you reached the valley boundary.&rdquo;
+              &ldquo;The shadow caught up before you reached safety.&rdquo;
             </p>
             <div className="death-actions">
               <button type="button" className="death-btn primary" onClick={handleRetry}>

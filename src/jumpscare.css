@@ -4,17 +4,17 @@
    distortion) and the cinematic "CONSUMED BY THE DARK" death screen.
    ============================================================================ */
 
-/* ---------- JUMPSCARE (1.4s) ---------- */
+/* ---------- PITCH-BLACK PORCELAIN JUMPSCARE (1.0s) ---------- */
 .game-page.is-jumpscare canvas {
-  animation: jsCanvasGlitch 0.11s steps(2) infinite;
+  animation: jsCanvasGlitch 0.07s steps(2) infinite;
 }
 
 @keyframes jsCanvasGlitch {
-  0% { filter: contrast(1.6) saturate(1.8); transform: translate(0, 0) scale(1.02); }
-  25% { filter: contrast(2.2) hue-rotate(-25deg) saturate(2.4); transform: translate(-9px, 4px) scale(1.04); }
-  50% { filter: invert(0.08) contrast(1.9) brightness(1.3); transform: translate(7px, -5px) scale(1.03); }
-  75% { filter: contrast(2.4) saturate(0.4) brightness(0.8); transform: translate(-4px, -3px) scale(1.05); }
-  100% { filter: contrast(1.6) saturate(1.8); transform: translate(5px, 6px) scale(1.02); }
+  0% { filter: contrast(1.42) saturate(0.72); transform: translate(0, 0) scale(1.03); }
+  25% { filter: contrast(1.65) saturate(0.6); transform: translate(-7px, 4px) scale(1.06); }
+  50% { filter: contrast(1.5) saturate(0.7); transform: translate(6px, -5px) scale(1.04); }
+  75% { filter: contrast(1.7) saturate(0.55); transform: translate(-5px, -3px) scale(1.07); }
+  100% { filter: contrast(1.45) saturate(0.72); transform: translate(5px, 5px) scale(1.03); }
 }
 
 .jumpscare-layer {
@@ -80,7 +80,7 @@
 
 .js-vignette {
   position: absolute; inset: 0;
-  background: radial-gradient(circle, transparent 30%, rgba(110, 0, 8, 0.7) 75%, #000 100%);
+  background: radial-gradient(circle, transparent 26%, rgba(0, 0, 0, 0.82) 72%, #000 100%);
 }
 
 /* ---------- DEATH SCREEN: CONSUMED BY THE DARK ---------- */

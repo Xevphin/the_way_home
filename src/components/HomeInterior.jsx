@@ -17,6 +17,8 @@ export default function HomeInterior({
   doorOpen = false,
   doorKnocked = false,
   canExitHouse = false,
+  clockText = '08:15',
+  dayLabel = 'AM  •  FRI',
 }) {
   const doorPivotRef = useRef();
   const doorBeaconRef = useRef();
@@ -186,8 +188,8 @@ export default function HomeInterior({
         ))}
       </group>
 
-      {/* Cozy Furniture, Bedside 08:15 AM Clock & 3 Chore Items */}
-      <HomeProps3D completedChores={completedChores} />
+      {/* Cozy Furniture, Bedside Digital Clock & 3 Chore Items */}
+      <HomeProps3D completedChores={completedChores} clockText={clockText} dayLabel={dayLabel} />
     </group>
   );
 }

@@ -64,40 +64,21 @@ export const HOME_FURNITURE_COLLIDERS = [
   { id: 'piano', minX: -0.45, maxX: 0.95, minZ: 2.65, maxZ: 4.75 },
   { id: 'arcade', minX: 5.15, maxX: 6.4, minZ: 4.65, maxZ: 5.95 },
   { id: 'driveway_sedan', minX: 4.05, maxX: 6.35, minZ: -14.7, maxZ: -10.1 },
+  // Exterior front yard picket fences (z = -16.6) & side yard fence boundaries
+  { id: 'front_yard_fence_west', minX: -7.2, maxX: 0.45, minZ: -17.0, maxZ: -16.1 },
+  { id: 'front_yard_fence_east', minX: 7.55, maxX: 11.6, minZ: -17.0, maxZ: -16.1 },
+  { id: 'driveway_side_fence_west', minX: -6.6, maxX: -5.85, minZ: -16.6, maxZ: -5.8 },
+  { id: 'driveway_side_fence_east', minX: 8.25, maxX: 9.0, minZ: -16.6, maxZ: -5.8 },
 ];
 
 export const OPENING_CREDITS = [
   {
-    id: 'title',
-    eyebrow: 'PRESENTS',
-    title: 'THE WAY HOME',
-    subtitle: '',
-    delayMs: 1200,
-    durationMs: 3800,
-  },
-  {
-    id: 'genre',
-    eyebrow: '',
-    title: 'A Psychological Supernatural Story',
-    subtitle: 'Some roads are never meant to be driven after midnight',
-    delayMs: 6200,
-    durationMs: 4000,
-  },
-  {
     id: 'director',
     eyebrow: 'DIRECTED & DEVELOPED BY',
-    title: 'THE WAY HOME STUDIO',
-    subtitle: 'Interactive Story Prototype',
-    delayMs: 11400,
-    durationMs: 3800,
-  },
-  {
-    id: 'chapter',
-    eyebrow: 'CHAPTER 1',
-    title: 'Just Another Day',
-    subtitle: 'Friday • 08:15 AM',
-    delayMs: 16400,
-    durationMs: 4200,
+    title: 'Xevphin',
+    subtitle: '',
+    delayMs: 2400,
+    durationMs: 4000,
   },
 ];
 

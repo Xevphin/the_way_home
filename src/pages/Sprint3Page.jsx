@@ -6,11 +6,10 @@
 // - Retains [SPACE] skip for fast testing during cinematic sequences.
 // ============================================================================
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import EveningHighwayScene from '../components/EveningHighwayScene';
 import CafeArrivalScene from '../components/CafeArrivalScene';
-import ObjectiveHud from '../components/ObjectiveHud';
 import TypewriterSubtitle from '../components/TypewriterSubtitle';
 import useCutsceneSkip from '../hooks/useCutsceneSkip';
 
@@ -20,22 +19,41 @@ export default function Sprint3Page({
 }) {
   const [stage, setStage] = useState('HIGHWAY_DRIVE'); // 'HIGHWAY_DRIVE' | 'CAFE_ARRIVAL'
   const [subtitle, setSubtitle] = useState(null);
+  const [cafeTransition, setCafeTransition] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
+  const swapTimerRef = useRef(null);
+  const revealTimerRef = useRef(null);
+  const endTimerRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      clearTimeout(swapTimerRef.current);
+      clearTimeout(revealTimerRef.current);
+      clearTimeout(endTimerRef.current);
+    },
+    []
+  );
 
   const advanceStage = useCallback(() => {
+    if (cafeTransition || fadingOut) return;
     setSubtitle(null);
     if (stage === 'HIGHWAY_DRIVE') {
-      setStage('CAFE_ARRIVAL');
+      // Smooth fade-to-black curtain with timestamp card before fading into Kafe Tasik Permai
+      setCafeTransition(true);
+      swapTimerRef.current = setTimeout(() => {
+        setStage('CAFE_ARRIVAL');
+      }, 850);
+      revealTimerRef.current = setTimeout(() => {
+        setCafeTransition(false);
+      }, 1550);
       return;
     }
-    if (!fadingOut) {
-      setFadingOut(true);
-      setTimeout(() => onStartSprint4(), 650);
-    }
-  }, [stage, fadingOut, onStartSprint4]);
+    setFadingOut(true);
+    endTimerRef.current = setTimeout(() => onStartSprint4(), 650);
+  }, [stage, cafeTransition, fadingOut, onStartSprint4]);
 
   // Safe debounced [SPACE] skip (advances one beat cleanly without skipping Sprint 4)
-  useCutsceneSkip(!fadingOut, advanceStage);
+  useCutsceneSkip(!cafeTransition && !fadingOut, advanceStage);
 
   const isHighway = stage === 'HIGHWAY_DRIVE';
 
@@ -54,13 +72,13 @@ export default function Sprint3Page({
         <fog attach="fog" args={[isHighway ? '#2a1f3d' : '#1e1930', 38, 155]} />
         {isHighway ? (
           <EveningHighwayScene
-            active={true}
+            active={!cafeTransition}
             onSubtitleChange={setSubtitle}
             onComplete={advanceStage}
           />
         ) : (
           <CafeArrivalScene
-            active={!fadingOut}
+            active={!cafeTransition && !fadingOut}
             holdParked={fadingOut}
             onSubtitleChange={setSubtitle}
             onComplete={advanceStage}
@@ -68,23 +86,13 @@ export default function Sprint3Page({
         )}
       </Canvas>
 
-      {/* Clean Borderless Top-Left Objective UI */}
-      <ObjectiveHud
-        chapterTitle="Chapter 1:"
-        customTaskText={
-          isHighway
-            ? 'Follow the lit E18 highway toward Taman Permai'
-            : 'Park outside Kafe Tasik Permai and join Amir'
-        }
-      />
-
       {/* Borderless Film Subtitles With Undertale-Style Voice Blips */}
-      {subtitle && !fadingOut && (
+      {subtitle && !cafeTransition && !fadingOut && (
         <TypewriterSubtitle tag={subtitle.tag} text={subtitle.text} inCutscene={true} />
       )}
 
       {/* Skip Cutscene Button */}
-      {!fadingOut && (
+      {!cafeTransition && !fadingOut && (
         <button
           type="button"
           className="skip-cutscene-minimal morning"
@@ -93,6 +101,19 @@ export default function Sprint3Page({
           Skip [SPACE]
         </button>
       )}
+
+      {/* Smooth Fade-In / Fade-Out Curtain Between Evening Highway & Cafe */}
+      <div
+        className="smooth-fade-curtain"
+        style={{ opacity: cafeTransition ? 1 : 0 }}
+        aria-hidden="true"
+      >
+        {cafeTransition && (
+          <div className="fade-transition-caption">
+            07:20 PM — Kafe Tasik Permai
+          </div>
+        )}
+      </div>
 
       {/* Smooth Fade-to-Black Bridge Into Cafe Hangout */}
       {fadingOut && <div className="fade-black-overlay" aria-hidden="true" />}

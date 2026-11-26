@@ -1,8 +1,8 @@
 // ============================================================================
 // src/components/HelpModal.jsx
-// Dedicated smoked-glass Controls & Survival Guide modal accessible from both
+// Dedicated smoked-glass Controls Guide modal accessible from both
 // the Main Menu ("Help") and the in-game [ESC] Pause Overlay ("Help").
-// Features stylized tactile keycap badges and brief survival horror tips.
+// Features stylized tactile keycap badges.
 // ============================================================================
 
 import React from 'react';
@@ -16,12 +16,6 @@ const CONTROL_ROWS = [
   { keys: ['ESC'], label: 'Pause game & adjust settings' },
 ];
 
-const SURVIVAL_TIPS = [
-  'Stay inside lantern-lit sanctuaries (Surau & Wakaf) whenever you feel watched—the dark cannot cross their light.',
-  'Conserve your flashlight battery in safe areas, and shine your beam directly at encroaching shadows to drive them back.',
-  'Read roadside signs, permits, and sketches carefully; every number you need is hidden in the environment.',
-];
-
 export default function HelpModal({ open, onClose }) {
   if (!open) return null;
 
@@ -29,14 +23,14 @@ export default function HelpModal({ open, onClose }) {
     <div
       className="modal-backdrop help-backdrop"
       role="dialog"
-      aria-label="Controls and Survival Guide"
+      aria-label="Controls Guide"
       onClick={onClose}
     >
       <div className="glass-modal help-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header-row">
           <div>
             <div className="glass-eyebrow">FIELD GUIDE</div>
-            <h2 className="subpanel-title">Controls &amp; Survival Guide</h2>
+            <h2 className="subpanel-title">Controls Guide</h2>
           </div>
           <button type="button" className="modal-x-btn" onClick={onClose} aria-label="Close Help">
             ✕
@@ -60,15 +54,6 @@ export default function HelpModal({ open, onClose }) {
             </div>
           ))}
         </div>
-
-        <div className="glass-hairline" />
-
-        <div className="help-section-label">SURVIVAL TIPS</div>
-        <ul className="help-tips-list">
-          {SURVIVAL_TIPS.map((tip) => (
-            <li key={tip}>{tip}</li>
-          ))}
-        </ul>
 
         <div className="glass-footer-actions">
           <button type="button" className="glass-btn primary" onClick={onClose}>
